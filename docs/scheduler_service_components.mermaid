@@ -1,0 +1,50 @@
+graph TB
+    subgraph "External Services"
+        GRPC["GrpcGateway<br/>+memberName<br/>+memberName"]
+        INTERFACE["Interface Svc<br/>+memberName<br/>+memberName"]
+        INVENTORY_EXT["Inventory Svc<br/>+memberName<br/>+memberName"]
+        INTERFACE2["Interface Svc<br/>+memberName<br/>+memberName"]
+        CMRSVC["CMRService<br/>+memberName<br/>+memberName"]
+    end
+    
+    SCHEDULERSVC["SchedulerService<br/>+memberName<br/>+memberName"]
+    
+    subgraph "Core Components"
+        ASSAYMANAGER["AssayManager<br/>+memberName<br/>+memberName"]
+        ASSAYEXECPLANNER["AssayExecutionPlanner<br/>+memberName<br/>+memberName"]
+    end
+    
+    subgraph "Sequence Management"
+        SEQGROUPMGR["SequenceGroupManager<br/>+memberName<br/>+memberName"]
+        ASSAYSAMPLE["AssaySample<br/>+memberName<br/>+memberName"]
+    end
+    
+    subgraph "Data Objects"
+        SEQGROUP["SequenceGroup<br/>+memberName<br/>+memberName"]
+        SEQUENCE["Sequence<br/>+memberName<br/>+memberName"]
+    end
+    
+    GRPC --> SCHEDULERSVC
+    INTERFACE --> SCHEDULERSVC
+    INVENTORY_EXT --> SCHEDULERSVC
+    INTERFACE2 --> SCHEDULERSVC
+    CMRSVC --> SCHEDULERSVC
+    
+    SCHEDULERSVC --> ASSAYMANAGER
+    ASSAYMANAGER --> ASSAYEXECPLANNER
+    ASSAYMANAGER --> SEQGROUPMGR
+    ASSAYMANAGER --> ASSAYSAMPLE
+    
+    SEQGROUPMGR --> SEQGROUP
+    SEQGROUP --> SEQUENCE
+    
+    ASSAYSAMPLE -.-> SEQGROUP
+    ASSAYEXECPLANNER -.-> ASSAYSAMPLE
+    
+    style SCHEDULERSVC fill:#e1f5fe
+    style ASSAYMANAGER fill:#e8f5e8
+    style ASSAYEXECPLANNER fill:#e8f5e8
+    style SEQGROUPMGR fill:#fff3e0
+    style ASSAYSAMPLE fill:#fff3e0
+    style SEQGROUP fill:#fce4ec
+    style SEQUENCE fill:#fce4ec
