@@ -1,0 +1,92 @@
+graph TB
+    subgraph "Pattern 1: Monolithic Class Context"
+        direction TB
+        MC[MonolithicScheduler]
+        MC --> MC1[ParseCMR]
+        MC --> MC2[CheckInventory]
+        MC --> MC3[ReserveInventory]
+        MC --> MC4[CreateSequences]
+        MC --> MC5[ExecuteHardware]
+        MC --> MC6[ReportFLR]
+        
+        style MC fill:#ffcccb
+        style MC1 fill:#ffcccb
+        style MC2 fill:#ffcccb
+        style MC3 fill:#ffcccb
+        style MC4 fill:#ffcccb
+        style MC5 fill:#ffcccb
+        style MC6 fill:#ffcccb
+    end
+    
+    subgraph "Pattern 2: Microservice/EDA"
+        direction LR
+        MS1[CMR Service] -.->|events| EB[Event Bus]
+        MS2[Inventory Service] -.->|events| EB
+        MS3[Sequence Service] -.->|events| EB
+        MS4[Execution Service] -.->|events| EB
+        MS5[FLR Service] -.->|events| EB
+        
+        EB -.->|events| MS1
+        EB -.->|events| MS2
+        EB -.->|events| MS3
+        EB -.->|events| MS4
+        EB -.->|events| MS5
+        
+        style MS1 fill:#e1f5fe
+        style MS2 fill:#e1f5fe
+        style MS3 fill:#e1f5fe
+        style MS4 fill:#e1f5fe
+        style MS5 fill:#e1f5fe
+        style EB fill:#fff3e0
+    end
+    
+    subgraph "Pattern 3: Process Manager (Your Current Architecture)"
+        direction TB
+        
+        subgraph "Process Managers (Orchestrators)"
+            AM[AssayManager<br/>- Manages lifecycle<br/>- Coordinates services<br/>- Handles state]
+            SGM[SequenceGroupManager<br/>- Hardware orchestration<br/>- Execution planning<br/>- Result processing]
+        end
+        
+        subgraph "Domain Services"
+            INV[Inventory Service<br/>- Check availability<br/>- Reserve/release<br/>- Track usage]
+            FLR[FLR Service<br/>- Context management<br/>- Data reporting<br/>- Result aggregation]
+            CMR[CMR Service<br/>- File parsing<br/>- Data transformation<br/>- Validation]
+        end
+        
+        subgraph "Infrastructure"
+            GRPC[gRPC Gateway<br/>- Hardware communication<br/>- Event streaming<br/>- Error handling]
+            STATE[State Manager<br/>- Environment monitoring<br/>- Business rules<br/>- State transitions]
+        end
+        
+        AM -->|orchestrates| INV
+        AM -->|orchestrates| FLR
+        AM -->|orchestrates| SGM
+        AM -->|uses| CMR
+        SGM -->|communicates via| GRPC
+        STATE -->|notifies| AM
+        
+        AM -.->|events| EVT[Domain Events]
+        SGM -.->|events| EVT
+        INV -.->|events| EVT
+        
+        style AM fill:#e8f5e8,stroke:#2e7d32,stroke-width:3px
+        style SGM fill:#e8f5e8,stroke:#2e7d32,stroke-width:3px
+        style INV fill:#e1f5fe
+        style FLR fill:#e1f5fe
+        style CMR fill:#e1f5fe
+        style GRPC fill:#fff8e1
+        style STATE fill:#f3e5f5
+        style EVT fill:#fff3e0
+    end
+    
+    subgraph "Pattern Analysis"
+        direction TB
+        PA1["✅ Current: Process Manager<br/>+ Clear orchestration<br/>+ Proper state management<br/>+ Good error handling<br/>+ Balanced complexity"]
+        PA2["❌ Monolithic<br/>- Poor separation<br/>- Hard to test<br/>- Tight coupling<br/>+ Simple debugging"]
+        PA3["⚠️ Microservice/EDA<br/>+ Complete decoupling<br/>+ Independent scaling<br/>- Complex orchestration<br/>- Distributed debugging"]
+        
+        style PA1 fill:#e8f5e8
+        style PA2 fill:#ffcccb
+        style PA3 fill:#fff3e0
+    end
