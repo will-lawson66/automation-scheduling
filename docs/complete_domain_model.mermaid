@@ -1,0 +1,307 @@
+classDiagram
+    %% Core Scheduling Domain
+    class SchedulerService {
+        -AssayManager _assayManager
+        -SequenceGroupManager _sequenceGroupManager
+        -InventoryService _inventoryService
+        -StateManager _stateManager
+        -ConfigurationManager _configurationManager
+        -ILogger _logger
+        +ProcessPharosRequest(request: SampleInformation): Task~ProcessingResult~
+        +ProcessCmrRequest(request: CmrExecutionRequest): Task~ProcessingResult~
+        +GetSystemStatus(): SystemStatus
+        +StartExecution(): Task~bool~
+        +StopExecution(): Task~bool~
+        +GetExecutionPlan(): Task~AssayExecutionPlan~
+    }
+
+    %% Inventory Management Domain
+    class InventoryService {
+        -Dictionary~string, InventoryArticle~ _inventory
+        -IInventoryRepository _repository
+        -ILogger _logger
+        +CheckAvailability(requirements: List~InventoryRequirement~): Task~InventoryCheckResult~
+        +ReserveInventory(requirements: List~InventoryRequirement~): Task~bool~
+        +ReleaseInventory(requirements: List~InventoryRequirement~): Task~bool~
+        +UpdateInventory(article: InventoryArticle, quantity: int): Task~bool~
+        +GetInventoryStatus(): InventoryStatus
+        +GetExpiringItems(days: int): List~InventoryArticle~
+    }
+
+    class InventoryArticle {
+        +string Id
+        +ArticleType Type
+        +string Name
+        +string LotNumber
+        +int Quantity
+        +int ReservedQuantity
+        +DateTime ExpirationDate
+        +DateTime LastUpdated
+        +ArticleStatus Status
+        +Dictionary~string, object~ Properties
+        +Location StorageLocation
+        +InventoryArticle(id: string, type: ArticleType, name: string)
+        +IsExpired(): bool
+        +IsExpiringSoon(days: int): bool
+        +CanReserve(quantity: int): bool
+        +Reserve(quantity: int): bool
+        +Release(quantity: int): bool
+    }
+
+    class InventoryReservation {
+        +Guid Id
+        +string ArticleId
+        +int Quantity
+        +DateTime ReservedAt
+        +DateTime? ReleasedAt
+        +Guid AssaySampleId
+        +ReservationStatus Status
+        +InventoryReservation(articleId: string, quantity: int, assaySampleId: Guid)
+        +IsActive(): bool
+        +Release(): void
+    }
+
+    %% Configuration Management Domain
+    class ConfigurationManager {
+        -Dictionary~string, ConfigurationItem~ _configurations
+        -IConfigurationRepository _repository
+        -ILogger _logger
+        +GetConfiguration~T~(key: string): T
+        +SetConfiguration~T~(key: string, value: T): Task~bool~
+        +GetAllConfigurations(): Dictionary~string, object~
+        +ValidateConfiguration(key: string, value: object): ValidationResult
+        +ReloadConfiguration(): Task~bool~
+        +OnConfigurationChanged: EventHandler~ConfigurationChangedEventArgs~
+    }
+
+    class ConfigurationItem {
+        +string Key
+        +object Value
+        +ConfigurationType Type
+        +string Description
+        +DateTime LastModified
+        +string ModifiedBy
+        +bool IsRequired
+        +ValidationRule ValidationRule
+        +ConfigurationItem(key: string, value: object, type: ConfigurationType)
+        +Validate(): ValidationResult
+        +UpdateValue(newValue: object): bool
+    }
+
+    %% State Management Domain
+    class StateManager {
+        -SchedulerState _currentState
+        -Timer _outOfRangeTimer
+        -IHalEventService _halEventService
+        -ILogger _logger
+        +GetCurrentState(): SchedulerState
+        +HandleHalEvent(halEvent: HalEvent): Task
+        +ForceStateTransition(newState: SchedulerState): bool
+        +IsProcessingAllowed(): bool
+        +ResetSystem(): Task~bool~
+        +OnStateChanged: EventHandler~StateChangedEventArgs~
+    }
+
+    class SchedulerState {
+        +EnvironmentState State
+        +DateTime StateEnteredAt
+        +DateTime? TimerStartedAt
+        +TimeSpan? TimeInState
+        +string Reason
+        +Dictionary~string, object~ StateData
+        +SchedulerState(state: EnvironmentState, reason: string)
+        +CanTransitionTo(newState: EnvironmentState): bool
+        +GetTimeRemaining(): TimeSpan?
+        +IsTimerActive(): bool
+    }
+
+    %% Hardware Integration Domain
+    class HardwareModelingService {
+        -Dictionary~string, HardwareComponent~ _components
+        -IHardwareStatusService _statusService
+        -ILogger _logger
+        +GetHardwareStatus(): HardwareStatus
+        +GetComponentStatus(componentId: string): ComponentStatus
+        +GetAvailableResources(): List~HardwareResource~
+        +ReserveResource(resourceId: string, duration: TimeSpan): Task~bool~
+        +ReleaseResource(resourceId: string): Task~bool~
+        +OnHardwareStatusChanged: EventHandler~HardwareStatusChangedEventArgs~
+    }
+
+    class HardwareComponent {
+        +string Id
+        +string Name
+        +ComponentType Type
+        +ComponentStatus Status
+        +Dictionary~string, object~ Properties
+        +DateTime LastStatusUpdate
+        +List~HardwareResource~ Resources
+        +HardwareComponent(id: string, name: string, type: ComponentType)
+        +IsOperational(): bool
+        +GetUtilization(): double
+        +PerformHealthCheck(): HealthCheckResult
+    }
+
+    class HardwareResource {
+        +string Id
+        +string Name
+        +ResourceType Type
+        +ResourceStatus Status
+        +bool IsExclusive
+        +TimeSpan? ReservedUntil
+        +Dictionary~string, object~ Capabilities
+        +HardwareResource(id: string, name: string, type: ResourceType)
+        +IsAvailable(): bool
+        +CanReserve(duration: TimeSpan): bool
+        +Reserve(duration: TimeSpan): bool
+        +Release(): bool
+    }
+
+    %% FLR Integration Domain
+    class FlrService {
+        -IFlrContextFactory _contextFactory
+        -IFlrDataRepository _dataRepository
+        -ILogger _logger
+        +CreateAssayRunContext(): Task~IFlrAssayRunContext~
+        +ReportAssayData(assayId: Guid, data: FlrData): Task~bool~
+        +GetAssayResults(assayId: Guid): Task~List~FlrResult~~
+        +ValidateData(data: FlrData): ValidationResult
+        +ExportData(filter: FlrDataFilter): Task~Stream~
+    }
+
+    class FlrData {
+        +Guid Id
+        +Guid AssayId
+        +Guid SequenceId
+        +DateTime Timestamp
+        +FlrDataType DataType
+        +Dictionary~string, object~ Measurements
+        +Dictionary~string, object~ Metadata
+        +DataQuality Quality
+        +FlrData(assayId: Guid, sequenceId: Guid, dataType: FlrDataType)
+        +AddMeasurement(parameter: string, value: object): void
+        +IsValid(): bool
+        +GetQualityScore(): double
+    }
+
+    %% CLI Command Domain
+    class CmrCommandService {
+        -ICmrService _cmrService
+        -IAssayManager _assayManager
+        -ILogger _logger
+        +LoadFile(filePath: string, destinationPath: string): Task~CommandResult~
+        +PrepareFile(fileName: string): Task~CommandResult~
+        +ExecuteFile(fileName: string): Task~CommandResult~
+        +AbortExecution(): Task~CommandResult~
+        +GetExecutionStatus(): ExecutionStatus
+        +ListFiles(): List~CmrFileInfo~
+    }
+
+    class CommandResult {
+        +bool IsSuccess
+        +string Message
+        +Dictionary~string, object~ Data
+        +List~string~ Warnings
+        +List~string~ Errors
+        +CommandResult(isSuccess: bool, message: string)
+        +AddWarning(warning: string): void
+        +AddError(error: string): void
+        +HasWarnings(): bool
+        +HasErrors(): bool
+    }
+
+    %% Supporting Value Objects and Enums
+    class EnvironmentState {
+        <<enumeration>>
+        Initialized
+        SteadyState
+        OutOfRange
+        InvalidTests
+    }
+
+    class ArticleType {
+        <<enumeration>>
+        Cartridge
+        Buffer
+        Reagent
+        Consumable
+        Calibrator
+        Control
+    }
+
+    class ComponentType {
+        <<enumeration>>
+        Core
+        Detector
+        Pump
+        Valve
+        Heater
+        Sensor
+    }
+
+    class ResourceType {
+        <<enumeration>>
+        Physical
+        Logical
+        Computational
+        Communication
+    }
+
+    class FlrDataType {
+        <<enumeration>>
+        RawSignal
+        ProcessedSignal
+        Calibration
+        Quality
+        Diagnostic
+    }
+
+    class Location {
+        +string Zone
+        +string Position
+        +int Row
+        +int Column
+        +Location(zone: string, position: string)
+        +ToString(): string
+    }
+
+    class ValidationResult {
+        +bool IsValid
+        +List~string~ Errors
+        +List~string~ Warnings
+        +ValidationResult(isValid: bool)
+        +AddError(error: string): void
+        +AddWarning(warning: string): void
+    }
+
+    %% Relationships
+    SchedulerService --> AssayManager : coordinates
+    SchedulerService --> SequenceGroupManager : coordinates
+    SchedulerService --> InventoryService : uses
+    SchedulerService --> StateManager : monitors
+    SchedulerService --> ConfigurationManager : configures
+
+    InventoryService --> InventoryArticle : manages
+    InventoryService --> InventoryReservation : tracks
+    InventoryService --> InventoryCheckResult : produces
+
+    InventoryArticle --> ArticleType : typed as
+    InventoryArticle --> Location : stored at
+    InventoryReservation --> InventoryArticle : reserves
+
+    ConfigurationManager --> ConfigurationItem : manages
+    ConfigurationItem --> ValidationResult : validates to
+
+    StateManager --> SchedulerState : maintains
+    StateManager --> EnvironmentState : transitions between
+
+    HardwareModelingService --> HardwareComponent : models
+    HardwareComponent --> HardwareResource : contains
+    HardwareComponent --> ComponentType : typed as
+    HardwareResource --> ResourceType : typed as
+
+    FlrService --> FlrData : processes
+    FlrData --> FlrDataType : typed as
+
+    CmrCommandService --> CommandResult : returns
+    CommandResult --> ValidationResult : contains
