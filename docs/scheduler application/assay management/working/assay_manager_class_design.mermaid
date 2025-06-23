@@ -53,7 +53,6 @@ classDiagram
         -int _maxTestsScheduled
         -ILogger~AssayExecutionPlanner~ _logger
         +AssayExecutionPlanner(logger, configuration)
-        +GetExecutionPlan(testOrders: IReadOnlyCollection~ITestOrder~): IExecutionPlan
         +GetExecutionPlan(assaySamples: IReadOnlyCollection~AssaySample~): AssayExecutionPlan
         +OptimizeExecutionOrder(samples: IReadOnlyCollection~AssaySample~): IReadOnlyCollection~AssaySample~
         -GroupAndSplit(source: IReadOnlyCollection~T~, maxSize: int, groupBySelector: Func~T, object~): List~List~T~~
