@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Product Id="*" 
+           Name="Automation Scheduler" 
+           Language="1033" 
+           Version="1.0.0.0" 
+           Manufacturer="Your Company Name"
+           UpgradeCode="12345678-1234-1234-1234-123456789012">
+    
+    <Package InstallerVersion="200" 
+             Compressed="yes" 
+             InstallScope="perMachine" 
+             Description="Automation Scheduler Installation Package"
+             Comments="Installs automation scheduler console applications and plugins" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <!-- Define installation directory -->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="CompanyFolder" Name="YourCompany">
+          <Directory Id="INSTALLFOLDER" Name="AutomationScheduler">
+            <Directory Id="PLUGINSFOLDER" Name="plugins" />
+          </Directory>
+        </Directory>
+      </Directory>
+      
+      <Directory Id="DesktopFolder" Name="Desktop" />
+      
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="Automation Scheduler"/>
+      </Directory>
+    </Directory>
+
+    <!-- Properties for configuration -->
+    <Property Id="SELECTEDCONFIGURATION" Value="Default" />
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+    
+    <!-- Property to store the full plugin path -->
+    <Property Id="PLUGINPATH" Value="[INSTALLFOLDER]plugins" />
+    
+    <!-- Include UI -->
+    <UIRef Id="CustomUI" />
+    
+    <!-- Features -->
+    <Feature Id="ProductFeature" Title="Automation Scheduler" Level="1">
+      <ComponentGroupRef Id="ConsoleApplications" />
+      <ComponentGroupRef Id="PluginComponents" />
+      <ComponentGroupRef Id="ConfigurationComponents" />
+      <ComponentGroupRef Id="ShortcutComponents" />
+      
+      <!-- Configuration-specific features -->
+      <Feature Id="ConfigOption1" Title="Configuration Option 1" Level="1" Display="hidden">
+        <Condition Level="0">SELECTEDCONFIGURATION &lt;&gt; "Option1"</Condition>
+      </Feature>
+      
+      <Feature Id="ConfigOption2" Title="Configuration Option 2" Level="1" Display="hidden">
+        <Condition Level="0">SELECTEDCONFIGURATION &lt;&gt; "Option2"</Condition>
+      </Feature>
+      
+      <Feature Id="ConfigOption3" Title="Configuration Option 3" Level="1" Display="hidden">
+        <Condition Level="0">SELECTEDCONFIGURATION &lt;&gt; "Option3"</Condition>
+      </Feature>
+    </Feature>
+
+    <!-- Custom Actions -->
+    <Binary Id="CustomActionBinary" SourceFile="$(var.AutomationScheduler.CustomActions.TargetDir)$(var.AutomationScheduler.CustomActions.TargetName).CA.dll"/>
+    
+    <CustomAction Id="UpdateAppSettings" 
+                  BinaryKey="CustomActionBinary" 
+                  DllEntry="UpdateAppSettings" 
+                  Execute="immediate" 
+                  Return="check" />
+    
+    <CustomAction Id="DownloadArtifacts" 
+                  BinaryKey="CustomActionBinary" 
+                  DllEntry="DownloadArtifacts" 
+                  Execute="deferred" 
+                  Impersonate="no"
+                  Return="check" />
+    
+    <CustomAction Id="UpdateConfigurationFiles" 
+                  BinaryKey="CustomActionBinary" 
+                  DllEntry="UpdateConfigurationFiles" 
+                  Execute="deferred" 
+                  Impersonate="no"
+                  Return="check" />
+
+    <!-- Installation Sequence -->
+    <InstallExecuteSequence>
+      <Custom Action="UpdateAppSettings" After="InstallFiles">NOT Installed</Custom>
+      <Custom Action="DownloadArtifacts" After="UpdateAppSettings">NOT Installed</Custom>
+      <Custom Action="UpdateConfigurationFiles" After="DownloadArtifacts">NOT Installed</Custom>
+    </InstallExecuteSequence>
+    
+    <!-- Icon definitions -->
+    <Icon Id="AppIcon.ico" SourceFile="Resources\app.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="AppIcon.ico" />
+  </Product>
+</Wix>

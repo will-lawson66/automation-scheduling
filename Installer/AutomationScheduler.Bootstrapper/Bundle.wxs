@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:bal="http://schemas.microsoft.com/wix/BalExtension"
+     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+  
+  <Bundle Name="Automation Scheduler Setup"
+          Version="1.0.0.0"
+          Manufacturer="Your Company Name"
+          UpgradeCode="BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB"
+          IconSourceFile="..\AutomationScheduler.Installer\Resources\app.ico">
+
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
+      <bal:WixStandardBootstrapperApplication 
+        LicenseFile="..\AutomationScheduler.Installer\Resources\license.rtf"
+        LogoFile="..\AutomationScheduler.Installer\Resources\corporate-logo.jpg"
+        ShowVersion="yes"
+        SuppressOptionsUI="yes" />
+    </BootstrapperApplicationRef>
+
+    <!-- Define variables for prerequisite detection -->
+    <Variable Name="DotNetCoreRuntimeInstalled" Type="numeric" Value="0" />
+    <Variable Name="DotNetDesktopRuntimeInstalled" Type="numeric" Value="0" />
+
+    <Chain>
+      <!-- .NET Core Runtime 8.0.19 -->
+      <PackageGroupRef Id="DotNetCoreRuntime80" />
+      
+      <!-- .NET Desktop Runtime 8.0.10 -->
+      <PackageGroupRef Id="DotNetDesktopRuntime80" />
+      
+      <!-- Main MSI Package -->
+      <MsiPackage Id="MainPackage"
+                  SourceFile="$(var.AutomationScheduler.Installer.TargetPath)"
+                  DisplayInternalUI="yes"
+                  Compressed="yes"
+                  Vital="yes">
+        <MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]" />
+      </MsiPackage>
+    </Chain>
+  </Bundle>
+</Wix>
