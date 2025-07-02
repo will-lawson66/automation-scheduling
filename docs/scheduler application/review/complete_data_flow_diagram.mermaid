@@ -20,7 +20,9 @@ flowchart TD
     CMR_SVC --> ASSAY_MGR
     
     %% State Management
-    HAL_EVENTS --> STATE_MGR[State Manager]
+    HAL_EVENTS --> GRPC_GW[gRPC Gateway]
+    GRPC_GW --> EVENTS[Events]
+    EVENTS --> STATE_MGR[State Manager]
     STATE_MGR --> SCHEDULER_SVC
     STATE_MGR --> ASSAY_MGR
     
@@ -30,9 +32,7 @@ flowchart TD
     
     %% Inventory Management
     ASSAY_MGR --> INV_SVC[Inventory Service]
-    INV_SVC --> INV_DB[(Inventory Database)]
     INV_SVC --> INV_CHECK{Inventory Available?}
-    
     INV_CHECK -->|Yes| INV_RESERVE[Reserve Inventory]
     INV_CHECK -->|No| INV_ERROR[Inventory Error]
     INV_ERROR --> CMR_CMD_SVC
@@ -42,41 +42,22 @@ flowchart TD
     
     %% Sequence Group Processing
     SEQ_GROUP_MGR --> HW_PLAN[Hardware Execution Plan]
-    HW_PLAN --> GRPC_GW[gRPC Gateway]
+    HW_PLAN --> GRPC_GW
     GRPC_GW --> HW_EXEC_ENGINE[Hardware Execution Engine]
     
     %% Hardware Execution
-    HW_EXEC_ENGINE --> HW_SEQUENCES[Execute Sequences]
-    HW_SEQUENCES --> SEQ_EVENTS[Sequence Events]
-    SEQ_EVENTS --> GRPC_GW
+    HW_EXEC_ENGINE --> HAL_EVENTS
     GRPC_GW --> SEQ_GROUP_MGR
     
     %% Result Processing
     SEQ_GROUP_MGR --> SEQ_RESULTS[Sequence Results]
     SEQ_RESULTS --> ASSAY_MGR
     ASSAY_MGR --> FLR_SVC[FLR Service]
-    FLR_SVC --> FLR_DB[(FLR Database)]
-    
-    %% Configuration Management
-    CONFIG_MGR[Configuration Manager] --> CONFIG_DB[(Configuration Store)]
-    CONFIG_MGR --> SCHEDULER_SVC
-    CONFIG_MGR --> ASSAY_MGR
-    CONFIG_MGR --> SEQ_GROUP_MGR
-    CONFIG_MGR --> INV_SVC
     
     %% Data Persistence
     DATA_SVC[Data Persistence Service] --> SEQ_DB[(Sequence Database)]
     DATA_SVC --> ASSAY_MGR
     DATA_SVC --> SEQ_GROUP_MGR
-    
-    %% Monitoring and Logging
-    MONITOR[Monitoring Service] --> LOG_DB[(Logs)]
-    MONITOR --> METRICS_DB[(Metrics)]
-    SCHEDULER_SVC --> MONITOR
-    ASSAY_MGR --> MONITOR
-    SEQ_GROUP_MGR --> MONITOR
-    INV_SVC --> MONITOR
-    STATE_MGR --> MONITOR
     
     %% Cleanup and Finalization
     ASSAY_MGR --> CLEANUP[Cleanup Service]
@@ -91,12 +72,10 @@ flowchart TD
     ERROR_HANDLER --> LOG_DB
     
     %% Event Flow Lines
-    ASSAY_MGR -.->|Status Events| EVENT_BUS[Event Bus]
-    SEQ_GROUP_MGR -.->|Completion Events| EVENT_BUS
-    INV_SVC -.->|Inventory Events| EVENT_BUS
-    STATE_MGR -.->|State Events| EVENT_BUS
-    EVENT_BUS -.-> MONITOR
-    EVENT_BUS -.-> ERROR_HANDLER
+    ASSAY_MGR -.->|Status Events| EVENTS
+    SEQ_GROUP_MGR -.->|Completion Events| EVENTS
+    INV_SVC -.->|Inventory Events| EVENTS
+    STATE_MGR <-.->|State Events| EVENTS
     
     %% Styling
     classDef inputNode fill:#e1f5fe,stroke:#01579b,stroke-width:2px

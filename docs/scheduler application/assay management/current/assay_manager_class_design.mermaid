@@ -1,8 +1,8 @@
 classDiagram
     class AssayManager {
-        -Dictionary~Guid, AssaySample~ _assaySamples
-        -AssayExecutionPlanner _executionPlanner
-        -SequenceGroupManager _sequenceGroupManager
+        -ConcurrentDictionary~Guid, AssaySample~ _assaySamples
+        -IAssayExecutionPlanner _executionPlanner
+        -ISequenceGroupManager _sequenceGroupManager
         -IFlrContextFactory _flrContextFactory
         -IFlrAssayRunContext _flrAssayRunContext
         -IInventoryService _inventoryService
@@ -13,15 +13,12 @@ classDiagram
         +GetAssaySample(sampleId: Guid): AssaySample
         +GetAllAssaySamples(): IReadOnlyCollection~AssaySample~
         +GetAssaySamplesByStatus(status: AssayStatus): IReadOnlyCollection~AssaySample~
-        +CreateExecutionPlan(): Task~AssayExecutionPlan~
-        +StartExecution(): Task~bool~
-        +StopExecution(): Task~bool~
-        +HandleSequenceGroupCompletion(sequenceGroupId: Guid): Task
+        +CreateAssayExecutionPlan(): Task~AssayExecutionPlan~
+        +CreateSequenceGroup(assaySample: AssaySample)
+        
         +CheckInventoryAvailability(): Task~InventoryCheckResult~
         +ReserveInventory(): Task~bool~
         +ReleaseInventory(): Task~bool~
-        +StartAssayRun(): Task
-        +EndAssayRun(): Task
         +OnAssaySampleStatusChanged: EventHandler~AssaySampleStatusChangedEventArgs~
     }
 
@@ -45,7 +42,6 @@ classDiagram
         +GetEstimatedDuration(): TimeSpan
         +CanExecute(): bool
         +ValidateInventoryRequirements(): List~InventoryRequirement~
-        +CreateSequenceGroup(): SequenceGroup
         +OnStatusChanged: EventHandler~AssayStatusChangedEventArgs~
     }
 
@@ -53,7 +49,6 @@ classDiagram
         -int _maxTestsScheduled
         -ILogger~AssayExecutionPlanner~ _logger
         +AssayExecutionPlanner(logger, configuration)
-        +GetExecutionPlan(testOrders: IReadOnlyCollection~ITestOrder~): IExecutionPlan
         +GetExecutionPlan(assaySamples: IReadOnlyCollection~AssaySample~): AssayExecutionPlan
         +OptimizeExecutionOrder(samples: IReadOnlyCollection~AssaySample~): IReadOnlyCollection~AssaySample~
         -GroupAndSplit(source: IReadOnlyCollection~T~, maxSize: int, groupBySelector: Func~T, object~): List~List~T~~
@@ -62,17 +57,11 @@ classDiagram
     }
 
     class AssayExecutionPlan {
-        +int ExecutionId
-        +IEnumerable~AssayExecutionStep~ ExecutionSteps
+        +Guid AssayExecutionPlanId
+        +IEnumerable~AssaySample~ AssaySamples
         +DateTime CreatedAt
-        +AssayExecutionStatus Status
-        +TimeSpan EstimatedDuration
-        +AssayExecutionPlan(executionSteps: IReadOnlyCollection~AssayExecutionStep~)
-        +GetNextStep(): AssayExecutionStep
-        +MarkStepCompleted(stepId: Guid): void
-        +MarkStepFailed(stepId: Guid, error: string): void
-        +GetProgress(): ExecutionProgress
-    }
+        +AssayExecutionPlan(executionSteps: ConcurrentQueue~AssayExecutionStep~)
+}
 
     class AssayExecutionStep {
         +Guid Id
@@ -88,16 +77,12 @@ classDiagram
     }
 
     class SequenceGroupManager {
-        -Dictionary~Guid, SequenceGroup~ _sequenceGroups
-        -IGrpcGateway _grpcGateway
+        -ConcurrentDictionary~Guid, SequenceGroup~ _sequenceGroups
         -ILogger~SequenceGroupManager~ _logger
         +AddSequenceGroup(sequenceGroup: SequenceGroup): Task~bool~
         +RemoveSequenceGroup(sequenceGroupId: Guid): Task~bool~
-        +ExecuteSequenceGroup(sequenceGroupId: Guid): Task~bool~
-        +HandleSequenceCompletion(sequenceId: Guid, result: SequenceResult): Task
-        +HandleSequenceError(sequenceId: Guid, error: SequenceError): Task
-        +CreateHardwareExecutionPlan(): HardwareExecutionPlan
-        +OnSequenceGroupCompleted: EventHandler~SequenceGroupCompletedEventArgs~
+        +CreateSequenceGroup(assaySample: AssaySample): Task~SequenceGroup~
+        +HandleSequenceGroupCompletion(sequenceGroupId: Guid): Task
     }
 
     class Sample {
@@ -138,15 +123,11 @@ classDiagram
     }
 
     class SequenceGroup {
-        +Guid Id
+        +int Id
         +string Name
+        +string Description
         +List~Sequence~ Sequences
-        +SequenceGroupStatus Status
-        +Dictionary~string, object~ Parameters
-        +SequenceGroup(id: Guid, name: string)
-        +AddSequence(sequence: Sequence): void
-        +GetNextSequence(): Sequence
-        +IsCompleted(): bool
+        +SequenceGroup(id: Guid, name: string, description: string)        
     }
 
     class InventoryRequirement {
