@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
-     xmlns:bal="http://schemas.microsoft.com/wix/BalExtension"
-     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs/bundle"
+     xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
   
   <Bundle Name="Automation Scheduler Setup"
           Version="1.0.0.0"
@@ -9,13 +8,14 @@
           UpgradeCode="BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB"
           IconSourceFile="..\AutomationScheduler.Installer\Resources\app.ico">
 
-    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
+    <BootstrapperApplication>
       <bal:WixStandardBootstrapperApplication 
         LicenseFile="..\AutomationScheduler.Installer\Resources\license.rtf"
         LogoFile="..\AutomationScheduler.Installer\Resources\corporate-logo.jpg"
         ShowVersion="yes"
-        SuppressOptionsUI="yes" />
-    </BootstrapperApplicationRef>
+        SuppressOptionsUI="yes"
+        Theme="standard" />
+    </BootstrapperApplication>
 
     <!-- Define variables for prerequisite detection -->
     <Variable Name="DotNetCoreRuntimeInstalled" Type="numeric" Value="0" />

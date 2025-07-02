@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Fragment>
     <UI Id="CustomUI">
       <UIRef Id="WixUI_Mondo" />
@@ -11,10 +11,10 @@
       <WixVariable Id="WixUILicenseRtf" Value="Resources\license.rtf" />
       
       <!-- Insert custom dialog into the sequence -->
-      <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="ConfigurationSelectionDlg">LicenseAccepted = "1"</Publish>
-      <Publish Dialog="ConfigurationSelectionDlg" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
-      <Publish Dialog="ConfigurationSelectionDlg" Control="Next" Event="NewDialog" Value="SetupTypeDlg">1</Publish>
-      <Publish Dialog="SetupTypeDlg" Control="Back" Event="NewDialog" Value="ConfigurationSelectionDlg">1</Publish>
+      <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="ConfigurationSelectionDlg" Condition="LicenseAccepted = &quot;1&quot;" />
+      <Publish Dialog="ConfigurationSelectionDlg" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg" />
+      <Publish Dialog="ConfigurationSelectionDlg" Control="Next" Event="NewDialog" Value="SetupTypeDlg" />
+      <Publish Dialog="SetupTypeDlg" Control="Back" Event="NewDialog" Value="ConfigurationSelectionDlg" />
       
       <!-- Custom progress text for downloading artifacts -->
       <ProgressText Action="DownloadArtifacts">Downloading artifacts from Azure DevOps...</ProgressText>

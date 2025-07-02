@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
-     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
-     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs/bundle"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
   
   <Fragment>
     <!-- .NET Core Runtime 8.0 Detection and Installation -->
@@ -28,7 +27,6 @@
         <ExitCode Value="0" Behavior="success" />
         <ExitCode Value="1641" Behavior="scheduleReboot" />
         <ExitCode Value="3010" Behavior="scheduleReboot" />
-        <ExitCode Behavior="error" />
       </ExePackage>
     </PackageGroup>
 
@@ -56,7 +54,6 @@
         <ExitCode Value="0" Behavior="success" />
         <ExitCode Value="1641" Behavior="scheduleReboot" />
         <ExitCode Value="3010" Behavior="scheduleReboot" />
-        <ExitCode Behavior="error" />
       </ExePackage>
     </PackageGroup>
   </Fragment>

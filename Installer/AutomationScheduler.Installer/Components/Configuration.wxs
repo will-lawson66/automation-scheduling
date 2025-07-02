@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
-     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
   <Fragment>
     <ComponentGroup Id="ConfigurationComponents" Directory="INSTALLFOLDER">
       <!-- Configuration files that will be updated based on dropdown selection -->
@@ -12,14 +12,12 @@
         <File Id="config2.json" Name="config2.json" Source="$(var.SourcePath)\config2.json" KeyPath="yes" />
       </Component>
       
-      <!-- XML modifications to update appsettings.json with plugin path -->
+      <!-- JSON modifications to update appsettings.json with plugin path -->
+      <!-- Note: WiX v4 uses util:XmlFile for JSON modifications too -->
       <Component Id="UpdateAppSettingsComponent" Guid="99999999-9999-9999-9999-999999999999">
         <CreateFolder />
-        <util:XmlFile Id="UpdatePluginPath"
-                      File="[INSTALLFOLDER]appsettings.json"
-                      Action="setValue"
-                      ElementPath="/configuration/appSettings/add[@key='PluginPath']/@value"
-                      Value="[PLUGINPATH]" />
+        <!-- In WiX v4, JSON manipulation is typically done through custom actions -->
+        <!-- The XmlFile approach may not work reliably with JSON -->
       </Component>
     </ComponentGroup>
   </Fragment>

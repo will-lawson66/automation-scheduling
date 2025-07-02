@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
-     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-  <Product Id="*" 
-           Name="Automation Scheduler" 
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+  
+  <Package Name="Automation Scheduler" 
            Language="1033" 
            Version="1.0.0.0" 
            Manufacturer="Your Company Name"
-           UpgradeCode="12345678-1234-1234-1234-123456789012">
+           UpgradeCode="12345678-1234-1234-1234-123456789012"
+           InstallerVersion="500"
+           Compressed="yes"
+           Scope="perMachine">
     
-    <Package InstallerVersion="200" 
-             Compressed="yes" 
-             InstallScope="perMachine" 
-             Description="Automation Scheduler Installation Package"
-             Comments="Installs automation scheduler console applications and plugins" />
+    <Media Id="1" Cabinet="AutomationScheduler.cab" EmbedCab="yes" />
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-    <MediaTemplate EmbedCab="yes" />
 
     <!-- Define installation directory -->
     <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="ProgramFilesFolder">
+      <Directory Id="ProgramFiles64Folder">
         <Directory Id="CompanyFolder" Name="YourCompany">
           <Directory Id="INSTALLFOLDER" Name="AutomationScheduler">
             <Directory Id="PLUGINSFOLDER" Name="plugins" />
@@ -42,6 +41,7 @@
     <Property Id="PLUGINPATH" Value="[INSTALLFOLDER]plugins" />
     
     <!-- Include UI -->
+    <ui:WixUI Id="WixUI_Mondo" InstallDirectory="INSTALLFOLDER" />
     <UIRef Id="CustomUI" />
     
     <!-- Features -->
@@ -69,20 +69,20 @@
     <Binary Id="CustomActionBinary" SourceFile="$(var.AutomationScheduler.CustomActions.TargetDir)$(var.AutomationScheduler.CustomActions.TargetName).CA.dll"/>
     
     <CustomAction Id="UpdateAppSettings" 
-                  BinaryKey="CustomActionBinary" 
+                  BinaryRef="CustomActionBinary" 
                   DllEntry="UpdateAppSettings" 
                   Execute="immediate" 
                   Return="check" />
     
     <CustomAction Id="DownloadArtifacts" 
-                  BinaryKey="CustomActionBinary" 
+                  BinaryRef="CustomActionBinary" 
                   DllEntry="DownloadArtifacts" 
                   Execute="deferred" 
                   Impersonate="no"
                   Return="check" />
     
     <CustomAction Id="UpdateConfigurationFiles" 
-                  BinaryKey="CustomActionBinary" 
+                  BinaryRef="CustomActionBinary" 
                   DllEntry="UpdateConfigurationFiles" 
                   Execute="deferred" 
                   Impersonate="no"
@@ -90,13 +90,13 @@
 
     <!-- Installation Sequence -->
     <InstallExecuteSequence>
-      <Custom Action="UpdateAppSettings" After="InstallFiles">NOT Installed</Custom>
-      <Custom Action="DownloadArtifacts" After="UpdateAppSettings">NOT Installed</Custom>
-      <Custom Action="UpdateConfigurationFiles" After="DownloadArtifacts">NOT Installed</Custom>
+      <Custom Action="UpdateAppSettings" After="InstallFiles" Condition="NOT Installed" />
+      <Custom Action="DownloadArtifacts" After="UpdateAppSettings" Condition="NOT Installed" />
+      <Custom Action="UpdateConfigurationFiles" After="DownloadArtifacts" Condition="NOT Installed" />
     </InstallExecuteSequence>
     
     <!-- Icon definitions -->
     <Icon Id="AppIcon.ico" SourceFile="Resources\app.ico"/>
     <Property Id="ARPPRODUCTICON" Value="AppIcon.ico" />
-  </Product>
+  </Package>
 </Wix>

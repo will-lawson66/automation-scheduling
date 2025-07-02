@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Fragment>
     <ComponentGroup Id="ConsoleApplications" Directory="INSTALLFOLDER">
       <!-- Console Application 1 -->
@@ -10,7 +10,6 @@
                     Description="Automation Scheduler Console Application 1"
                     WorkingDirectory="INSTALLFOLDER" 
                     Icon="AppIcon.ico" 
-                    IconIndex="0" 
                     Advertise="yes" />
         </File>
         <File Id="ConsoleApp1.dll" Name="ConsoleApp1.dll" Source="$(var.SourcePath)\ConsoleApp1.dll" />
@@ -26,7 +25,6 @@
                     Description="Automation Scheduler Console Application 2"
                     WorkingDirectory="INSTALLFOLDER" 
                     Icon="AppIcon.ico" 
-                    IconIndex="0" 
                     Advertise="yes" />
         </File>
         <File Id="ConsoleApp2.dll" Name="ConsoleApp2.dll" Source="$(var.SourcePath)\ConsoleApp2.dll" />
@@ -42,7 +40,6 @@
                     Description="Automation Scheduler Console Application 3"
                     WorkingDirectory="INSTALLFOLDER" 
                     Icon="AppIcon.ico" 
-                    IconIndex="0" 
                     Advertise="yes" />
         </File>
         <File Id="ConsoleApp3.dll" Name="ConsoleApp3.dll" Source="$(var.SourcePath)\ConsoleApp3.dll" />
