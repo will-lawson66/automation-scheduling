@@ -6,7 +6,7 @@
 	  Version="1.0.0.0">
 	  <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
 	  <Feature Id="Main">
-         <ComponentGroupRef Id="ExampleComponents" />
+         <ComponentGroupRef Id="AppComponents" />
 	  </Feature>
   </Package>
 </Wix>
