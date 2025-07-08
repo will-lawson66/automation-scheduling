@@ -9,9 +9,10 @@
 	  
 	  <MediaTemplate EmbedCab="yes" />
 	  
+	  
 	  <Feature Id="Main">
          <ComponentGroupRef Id="AppComponents" />
 	  </Feature>
-	  <Launch Condition="MsiNTProductType = 1" Message="Launch condition failed."/>
+
   </Package>
 </Wix>

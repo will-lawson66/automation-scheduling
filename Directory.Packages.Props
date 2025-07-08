@@ -14,7 +14,7 @@
     <PackageVersion Include="Grpc.AspNetCore.Server.Reflection" Version="2.66.0" />
     <PackageVersion Include="Grpc.Core" Version="2.46.6" />
     <PackageVersion Include="Grpc.Core.Api" Version="2.62.0" />
-	  <PackageVersion Include="Grpc.Net.ClientFactory" Version="2.62.0" />
+    <PackageVersion Include="Grpc.Net.ClientFactory" Version="2.62.0" />
     <PackageVersion Include="HardwareSimulator" Version="0.1.0.34-prerelease" />
     <PackageVersion Include="Instrument.Genome" Version="0.1.0.42-prerelease" />
     <PackageVersion Include="Instrument.Genome.Board" Version="0.1.0.42-prerelease" />
@@ -129,7 +129,13 @@
     <PackageVersion Include="Tetris.Firmware.ReagentGripperUnit.windows" Version="0.1.0-alpha.4" />
     <PackageVersion Include="Tetris.Firmware.ReagentHandlerXY.api" Version="0.1.0-alpha.3" />
     <PackageVersion Include="Tetris.Firmware.ReagentHandlerXY.windows" Version="0.1.0-alpha.3" />
-       <!--<PackageVersion Include="System.Configuration.ConfigurationManager" Version="6.0.1" />-->
+    <PackageVersion Include="WixToolset.Bal.wixext">
+      <Version>6.0.1</Version>
+    </PackageVersion>
+    <PackageVersion Include="WixToolset.Util.wixext">
+      <Version>6.0.1</Version>
+    </PackageVersion>
+    <!--<PackageVersion Include="System.Configuration.ConfigurationManager" Version="6.0.1" />-->
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.assert" Version="2.9.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.0" />

@@ -1,0 +1,53 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+
+	<Fragment>
+		<!-- .NET Core Runtime 8.0 Detection and Installation -->
+		<util:RegistrySearch Root="HKLM"
+                             Key="SOFTWARE\dotnet\Setup\InstalledVersions\x64\sharedhost"
+                             Value="Version"
+                             Variable="AspNetCore80Version"
+                             Result="value" />
+
+		<PackageGroup Id="AspNetCoreRuntime80">
+			<ExePackage Id="AspNetCore80Runtime"
+                        Name="Microsoft.AspNetCore.App.Runtime.8.0.10.exe"
+                        SourceFile="Prerequisites\aspnetcore-runtime-8.0.10-win-x64.exe"
+                        Compressed="yes"
+                        PerMachine="yes"
+                        Permanent="yes"
+                        Vital="yes"
+                        DetectCondition="AspNetCore80Version &gt;= v8.0.10"
+                        InstallCondition="NOT AspNetCore80Version OR (AspNetCore80Version &lt; v8.0.10)"
+                        InstallArguments="/install /quiet /norestart">
+				<ExitCode Value="0" Behavior="success" />
+				<ExitCode Value="1641" Behavior="scheduleReboot" />
+				<ExitCode Value="3010" Behavior="scheduleReboot" />
+			</ExePackage>
+		</PackageGroup>
+
+		<!-- .NET Desktop Runtime 8.0 Detection and Installation -->
+		<util:RegistrySearch Root="HKLM"
+                             Key="SOFTWARE\dotnet\Setup\InstalledVersions\x64\desktop"
+                             Value="Version"
+                             Variable="DotNetDesktop80Version"
+                             Result="value" />
+
+		<PackageGroup Id="DotNetDesktopRuntime80">
+			<ExePackage Id="DotNetDesktop80Runtime"
+                        Name="Microsoft.WindowsDesktop.App.Runtime.8.0.10.exe"
+                        SourceFile="Prerequisites\windowsdesktop-runtime-8.0.10-win-x64.exe"
+                        Compressed="yes"
+                        PerMachine="yes"
+                        Permanent="yes"
+                        Vital="yes"
+                        DetectCondition="DotNetDesktop80Version &gt;= v8.0.10"
+                        InstallCondition="NOT DotNetDesktop80Version OR (DotNetDesktop80Version &lt; v8.0.10)"
+                        InstallArguments="/install /quiet /norestart">
+				<ExitCode Value="0" Behavior="success" />
+				<ExitCode Value="1641" Behavior="scheduleReboot" />
+				<ExitCode Value="3010" Behavior="scheduleReboot" />
+			</ExePackage>
+		</PackageGroup>
+	</Fragment>
+</Wix>

@@ -1,0 +1,29 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" 
+	 xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
+  <Bundle 
+	  Id="TODO_Manufacturer.Bootstrapper" 
+	  Name="Bootstrapper" 
+	  Manufacturer="TODO Manufacturer" 
+	  Version="1.0.0.0">
+    <BootstrapperApplication>
+      <bal:WixStandardBootstrapperApplication 
+		  LicenseUrl="https://www.example.com/license" 
+		  Theme="hyperlinkLicense" />
+    </BootstrapperApplication>
+
+    <Chain>
+	    <!-- .NET Core Runtime 8.0.10 -->
+	    <PackageGroupRef Id="AspNetCoreRuntime80" />
+
+	    <!-- .NET Desktop Runtime 8.0.10 -->
+	    <PackageGroupRef Id="DotNetDesktopRuntime80" />
+		
+		<MsiPackage SourceFile="$(var.WiXTutorialPackage.TargetPath)"
+		            Compressed="yes"
+		            Vital="yes">
+			<MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]" />
+		</MsiPackage>
+    </Chain>
+
+  </Bundle>
+</Wix>
