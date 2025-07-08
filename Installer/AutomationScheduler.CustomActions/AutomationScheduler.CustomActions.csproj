@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="WixToolset.Dtf.WindowsInstaller" Version="4.0.0" />
-    <PackageReference Include="WixToolset.Dtf.CustomAction" Version="4.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NuGet.Protocol" Version="6.8.0" />
-    <PackageReference Include="Microsoft.TeamFoundationServer.Client" Version="19.225.0" />
+    <PackageReference Include="Microsoft.TeamFoundationServer.Client" />
+    <PackageReference Include="WixToolset.Dtf.WindowsInstaller" />
+    <PackageReference Include="WixToolset.Dtf.CustomAction" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="NuGet.Protocol" />
   </ItemGroup>
 
   <ItemGroup>

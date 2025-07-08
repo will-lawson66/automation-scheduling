@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs/bundle"
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
      xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
   
   <Bundle Name="Automation Scheduler Setup"
@@ -31,7 +31,6 @@
       <!-- Main MSI Package -->
       <MsiPackage Id="MainPackage"
                   SourceFile="$(var.AutomationScheduler.Installer.TargetPath)"
-                  DisplayInternalUI="yes"
                   Compressed="yes"
                   Vital="yes">
         <MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]" />

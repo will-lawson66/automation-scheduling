@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- The package versions specified here apply to every project that uses central package management. -->
+    <!-- See https://learn.microsoft.com/en-us/nuget/consume-packages/central-package-management -->
+    <!-- .NET Extensions -->
+    <PackageVersion Include="WixToolset.UI.wixext" Version="4.0.5" />
+    <PackageVersion Include="WixToolset.Bal.wixext" Version="4.0.5" />
+    <PackageVersion Include="WixToolset.Util.wixext" Version="4.0.5" />   
+    <PackageVersion Include="WixToolset.Dtf.WindowsInstaller" Version="4.0.0" />
+    <PackageVersion Include="WixToolset.Dtf.CustomAction" Version="4.0.0" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageVersion Include="NuGet.Protocol" Version="6.8.0" />
+    <PackageVersion Include="Microsoft.TeamFoundationServer.Client" Version="19.225.1" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageVersion Include="xunit" Version="2.6.1" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.3"/>
+    <PackageVersion Include="coverlet.collector" Version="6.0.0"/>
+    <PackageVersion Include="Moq" Version="4.20.69" />
+    <PackageVersion Include="FluentAssertions" Version="6.12.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    
+  </ItemGroup>
+</Project>

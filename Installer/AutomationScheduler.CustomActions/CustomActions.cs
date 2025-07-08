@@ -16,8 +16,8 @@ namespace AutomationScheduler.CustomActions
 {
     public class CustomActions
     {
-        [CustomAction]
-        public static ActionResult UpdateAppSettings(Session session)
+        [WixToolset.Dtf.WindowsInstaller.CustomActionAttribute]
+        public static WixToolset.Dtf.WindowsInstaller.ActionResult UpdateAppSettings(WixToolset.Dtf.WindowsInstaller.Session session)
         {
             session.Log("Begin UpdateAppSettings");
 
@@ -48,20 +48,20 @@ namespace AutomationScheduler.CustomActions
                 else
                 {
                     session.Log($"appsettings.json not found at: {appSettingsPath}");
-                    return ActionResult.Failure;
+                    return WixToolset.Dtf.WindowsInstaller.ActionResult.Failure;
                 }
 
-                return ActionResult.Success;
+                return WixToolset.Dtf.WindowsInstaller.ActionResult.Success;
             }
             catch (Exception ex)
             {
                 session.Log($"Error in UpdateAppSettings: {ex.Message}");
-                return ActionResult.Failure;
+                return WixToolset.Dtf.WindowsInstaller.ActionResult.Failure;
             }
         }
 
-        [CustomAction]
-        public static ActionResult DownloadArtifacts(Session session)
+        [WixToolset.Dtf.WindowsInstaller.CustomActionAttribute]
+        public static WixToolset.Dtf.WindowsInstaller.ActionResult DownloadArtifacts(WixToolset.Dtf.WindowsInstaller.Session session)
         {
             session.Log("Begin DownloadArtifacts");
 
@@ -82,7 +82,7 @@ namespace AutomationScheduler.CustomActions
                 if (string.IsNullOrEmpty(personalAccessToken))
                 {
                     session.Log("Azure DevOps PAT not provided. Skipping artifact download.");
-                    return ActionResult.Success;
+                    return WixToolset.Dtf.WindowsInstaller.ActionResult.Success;
                 }
 
                 // Download artifacts based on configuration
@@ -92,16 +92,16 @@ namespace AutomationScheduler.CustomActions
                         feedName, selectedConfig, pluginFolder);
                 }).Wait();
 
-                return ActionResult.Success;
+                return WixToolset.Dtf.WindowsInstaller.ActionResult.Success;
             }
             catch (Exception ex)
             {
                 session.Log($"Error in DownloadArtifacts: {ex.Message}");
-                return ActionResult.Failure;
+                return WixToolset.Dtf.WindowsInstaller.ActionResult.Failure;
             }
         }
 
-        private static async Task DownloadNuGetPackagesAsync(Session session, string azureDevOpsUrl, 
+        private static async Task DownloadNuGetPackagesAsync(WixToolset.Dtf.WindowsInstaller.Session session, string azureDevOpsUrl, 
             string pat, string feedName, string configuration, string targetFolder)
         {
             try
@@ -146,8 +146,8 @@ namespace AutomationScheduler.CustomActions
             }
         }
 
-        [CustomAction]
-        public static ActionResult UpdateConfigurationFiles(Session session)
+        [WixToolset.Dtf.WindowsInstaller.CustomActionAttribute]
+        public static WixToolset.Dtf.WindowsInstaller.ActionResult UpdateConfigurationFiles(WixToolset.Dtf.WindowsInstaller.Session session)
         {
             session.Log("Begin UpdateConfigurationFiles");
 
@@ -205,12 +205,12 @@ namespace AutomationScheduler.CustomActions
                     session.Log("Updated config2.json");
                 }
 
-                return ActionResult.Success;
+                return WixToolset.Dtf.WindowsInstaller.ActionResult.Success;
             }
             catch (Exception ex)
             {
                 session.Log($"Error in UpdateConfigurationFiles: {ex.Message}");
-                return ActionResult.Failure;
+                return WixToolset.Dtf.WindowsInstaller.ActionResult.Failure;
             }
         }
     }

@@ -1,4 +1,4 @@
-using Microsoft.Deployment.WindowsInstaller;
+using WixToolset.Dtf.WindowsInstaller;
 using Moq;
 using System.Collections.Generic;
 
@@ -6,14 +6,14 @@ namespace AutomationScheduler.Installer.Tests.Utilities
 {
     public static class MockSessionFactory
     {
-        public static Mock<Session> CreateMockSession(Dictionary<string, string> properties = null)
+        public static Mock<Session> CreateMockSession(Dictionary<string, string>? properties = null)
         {
             var mockSession = new Mock<Session>();
             var sessionProperties = properties ?? new Dictionary<string, string>();
 
             // Setup property access
             mockSession.Setup(s => s[It.IsAny<string>()])
-                .Returns<string>(key => sessionProperties.ContainsKey(key) ? sessionProperties[key] : null);
+                .Returns<string>(key => (sessionProperties.GetValueOrDefault(key)) ?? string.Empty);
 
             // Setup property setter
             mockSession.SetupSet(s => s[It.IsAny<string>()] = It.IsAny<string>())
@@ -25,7 +25,7 @@ namespace AutomationScheduler.Installer.Tests.Utilities
                 .Callback<string>(message => logs.Add(message));
 
             // Add a way to retrieve logs for verification
-            mockSession.Setup(s => s.Database).Returns((Database)null);
+            _ = mockSession.Setup(s => s.Database).Returns((Database)null);
             
             return mockSession;
         }
