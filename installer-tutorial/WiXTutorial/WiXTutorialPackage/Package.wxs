@@ -1,0 +1,12 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package 
+	  Id="TODO_Manufacturer.WiXTutorialPackage" 
+	  Name="WiXTutorialPackage" 
+	  Manufacturer="TODO Manufacturer" 
+	  Version="1.0.0.0">
+	  <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
+	  <Feature Id="Main">
+         <ComponentGroupRef Id="ExampleComponents" />
+	  </Feature>
+  </Package>
+</Wix>
