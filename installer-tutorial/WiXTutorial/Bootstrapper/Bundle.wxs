@@ -1,15 +1,20 @@
 ﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" 
 	 xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
-  <Bundle 
-	  Id="TODO_Manufacturer.Bootstrapper" 
-	  Name="Bootstrapper" 
-	  Manufacturer="TODO Manufacturer" 
-	  Version="1.0.0.0">
-    <BootstrapperApplication>
+  
+	<Bundle 
+		Id="BootstrapperBundle"
+		Name="WixTutorialBootstrapper"
+		Version="1.0.0.0">
+    
+	<BootstrapperApplication>
       <bal:WixStandardBootstrapperApplication 
 		  LicenseUrl="https://www.example.com/license" 
 		  Theme="hyperlinkLicense" />
     </BootstrapperApplication>
+
+	<!-- Define variables for prerequisite detection -->
+	<Variable Name="AspNetCore80Version" Type="version" Value="0" />
+	<Variable Name="DotNetDesktop80Version" Type="version" Value="0" />
 
     <Chain>
 	    <!-- .NET Core Runtime 8.0.10 -->
