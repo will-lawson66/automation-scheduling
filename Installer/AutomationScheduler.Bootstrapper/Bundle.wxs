@@ -18,8 +18,8 @@
     </BootstrapperApplication>
 
     <!-- Define variables for prerequisite detection -->
-    <Variable Name="DotNetCoreRuntimeInstalled" Type="numeric" Value="0" />
-    <Variable Name="DotNetDesktopRuntimeInstalled" Type="numeric" Value="0" />
+    <Variable Name="AspNetCore80Version" Type="version" Value="0" />
+<Variable Name="DotNetDesktop80Version" Type="version" Value="0" />
 
     <Chain>
       <!-- .NET Core Runtime 8.0.19 -->
