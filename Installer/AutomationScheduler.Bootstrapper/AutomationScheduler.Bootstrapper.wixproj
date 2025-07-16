@@ -1,0 +1,21 @@
+<Project Sdk="WixToolset.Sdk/4.0.5">
+  <PropertyGroup>
+    <OutputName>AutomationSchedulerBootstrapper</OutputName>
+    <OutputType>Bundle</OutputType>
+    <DefineSolutionProperties>false</DefineSolutionProperties>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Bal.wixext" />
+    <PackageReference Include="WixToolset.Util.wixext" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AutomationScheduler.Installer\AutomationScheduler.Installer.wixproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Bundle.wxs" />
+    <Compile Include="Prerequisites.wxs" />
+  </ItemGroup>
+</Project>

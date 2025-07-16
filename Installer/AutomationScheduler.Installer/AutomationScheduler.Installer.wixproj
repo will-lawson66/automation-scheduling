@@ -1,0 +1,35 @@
+<Project Sdk="WixToolset.Sdk/4.0.5">
+  <PropertyGroup>
+    <OutputName>AutomationSchedulerSetup</OutputName>
+    <OutputType>Package</OutputType>
+    <DefineSolutionProperties>false</DefineSolutionProperties>
+    <!-- Define the source path for your application files -->
+    <SourcePath Condition="'$(SourcePath)' == ''">C:\Path\To\Your\Build\Output</SourcePath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.UI.wixext" />
+    <PackageReference Include="WixToolset.Util.wixext" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AutomationScheduler.CustomActions\AutomationScheduler.CustomActions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Product.wxs" />
+    <Compile Include="Components\ConsoleApplications.wxs" />
+    <Compile Include="Components\Plugins.wxs" />
+    <Compile Include="Components\Configuration.wxs" />
+    <Compile Include="Components\Shortcuts.wxs" />
+    <Compile Include="UI\CustomDialogs.wxs" />
+    <Compile Include="UI\CustomUI.wxs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\corporate-logo.jpg" />
+    <Content Include="Resources\banner.jpg" />
+    <Content Include="Resources\dialog.jpg" />
+    <Content Include="Resources\license.rtf" />
+  </ItemGroup>
+</Project>

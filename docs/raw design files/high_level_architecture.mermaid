@@ -1,0 +1,25 @@
+graph LR
+    subgraph "Scheduler App"
+        CMR["CMR Svc"]
+        SCHEDULER["Scheduler Svc"]
+        PERSISTENT["Persistent Data Svc"]
+        INVENTORY["Inventory Svc"]
+        FLR["FLR Svc"]
+    end
+    
+    subgraph "Hardware Exec App"
+        HEE["Hardware Execution Engine"]
+    end
+    
+    CMR --> SCHEDULER
+    PERSISTENT --> SCHEDULER
+    SCHEDULER --> FLR
+    SCHEDULER --> INVENTORY
+    SCHEDULER -.-> HEE
+    
+    style CMR fill:#e1f5fe
+    style SCHEDULER fill:#e1f5fe
+    style PERSISTENT fill:#e1f5fe
+    style INVENTORY fill:#e1f5fe
+    style FLR fill:#e1f5fe
+    style HEE fill:#f3e5f5

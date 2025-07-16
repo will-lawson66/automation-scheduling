@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Cli\Instrument.Cli.CommandPlugin\Instrument.Cli.CommandPlugin.csproj" />
+    <ProjectReference Include="..\..\..\Execution\Instrument.Execution.Grpc.Schedule.Cli\Instrument.Execution.Grpc.Schedule.Cli.csproj" />
+    <ProjectReference Include="..\Instrument.Scheduler.Cmr.Grpc.Service\Instrument.Scheduler.Cmr.Grpc.Service.csproj" />
+    <ProjectReference Include="..\Instrument.Scheduler.Cmr.Grpc\Instrument.Scheduler.Cmr.Grpc.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,227 @@
+classDiagram
+    class AssayManager {
+        -ConcurrentDictionary~Guid, AssaySample~ _assaySamples
+        -IAssayExecutionPlanner _executionPlanner
+        -ISequenceGroupManager _sequenceGroupManager
+        -IFlrContextFactory _flrContextFactory
+        -IFlrAssayRunContext _flrAssayRunContext
+        -IInventoryService _inventoryService
+        -ILogger~AssayManager~ _logger
+        +AssayManager(executionPlanner, sequenceGroupManager, flrContextFactory, inventoryService, logger)
+        +AddAssaySamples(assaySamples: IEnumerable~AssaySample~): Task~bool~
+        +RemoveAssaySample(sampleId: Guid): Task~bool~
+        +GetAssaySample(sampleId: Guid): AssaySample
+        +GetAllAssaySamples(): IReadOnlyCollection~AssaySample~
+        +GetAssaySamplesByStatus(status: AssayStatus): IReadOnlyCollection~AssaySample~
+        +CreateAssayExecutionPlan(): Task~AssayExecutionPlan~
+        +CreateSequenceGroup(assaySample: AssaySample)
+        
+        +CheckInventoryAvailability(): Task~InventoryCheckResult~
+        +ReserveInventory(): Task~bool~
+        +ReleaseInventory(): Task~bool~
+        +OnAssaySampleStatusChanged: EventHandler~AssaySampleStatusChangedEventArgs~
+    }
+
+    class AssaySample {
+        +Guid Id
+        +Sample Sample
+        +List~Assay~ Assays
+        +AssayStatus Status
+        +DateTime CreatedAt
+        +DateTime? StartedAt
+        +DateTime? CompletedAt
+        +string ErrorMessage
+        +Dictionary~string, object~ Metadata
+        +SequenceGroup SequenceGroup
+        +IFlrSampleTestContext FlrContext
+        +int Priority
+        +List~AssayResult~ Results
+        +AssaySample(sample: Sample, assays: List~Assay~)
+        +SetStatus(status: AssayStatus): void
+        +AddResult(result: AssayResult): void
+        +GetEstimatedDuration(): TimeSpan
+        +CanExecute(): bool
+        +ValidateInventoryRequirements(): List~InventoryRequirement~
+        +OnStatusChanged: EventHandler~AssayStatusChangedEventArgs~
+    }
+
+    class AssayExecutionPlanner {
+        -int _maxTestsScheduled
+        -ILogger~AssayExecutionPlanner~ _logger
+        +AssayExecutionPlanner(logger, configuration)
+        +GetExecutionPlan(assaySamples: IReadOnlyCollection~AssaySample~): AssayExecutionPlan
+        +OptimizeExecutionOrder(samples: IReadOnlyCollection~AssaySample~): IReadOnlyCollection~AssaySample~
+        -GroupAndSplit(source: IReadOnlyCollection~T~, maxSize: int, groupBySelector: Func~T, object~): List~List~T~~
+        -CalculatePriority(sample: AssaySample): int
+        -CheckResourceContention(samples: IReadOnlyCollection~AssaySample~): ConflictResolution
+    }
+
+    class AssayExecutionPlan {
+        +Guid AssayExecutionPlanId
+        +IEnumerable~AssaySample~ AssaySamples
+        +DateTime CreatedAt
+        +AssayExecutionPlan(executionSteps: ConcurrentQueue~AssayExecutionStep~)
+}
+
+    class AssayExecutionStep {
+        +Guid Id
+        +IEnumerable~AssaySample~ AssaySamples
+        +AssayStepStatus Status
+        +DateTime? StartedAt
+        +DateTime? CompletedAt
+        +string ErrorMessage
+        +TimeSpan EstimatedDuration
+        +AssayExecutionStep(assaySamples: IEnumerable~AssaySample~)
+        +CanExecute(): bool
+        +GetResourceRequirements(): List~ResourceRequirement~
+    }
+
+    class SequenceGroupManager {
+        -ConcurrentDictionary~Guid, SequenceGroup~ _sequenceGroups
+        -ILogger~SequenceGroupManager~ _logger
+        +AddSequenceGroup(sequenceGroup: SequenceGroup): Task~bool~
+        +RemoveSequenceGroup(sequenceGroupId: Guid): Task~bool~
+        +CreateSequenceGroup(assaySample: AssaySample): Task~SequenceGroup~
+        +HandleSequenceGroupCompletion(sequenceGroupId: Guid): Task
+    }
+
+    class Sample {
+        +string Id
+        +SampleType Type
+        +TubeType TubeType
+        +SampleInputLocation SampleInputLocation
+        +string Position
+        +string CartridgeLot
+        +Dictionary~string, object~ Properties
+        +Sample(id: string, type: SampleType)
+        +ValidateProperties(): bool
+    }
+
+    class Assay {
+        +int Id
+        +string Name
+        +string TestMethod
+        +Technology Technology
+        +Dictionary~string, object~ Parameters
+        +List~InventoryRequirement~ InventoryRequirements
+        +TimeSpan EstimatedDuration
+        +Assay(id: int, name: string, testMethod: string)
+        +GetInventoryRequirements(): List~InventoryRequirement~
+        +ValidateParameters(): bool
+    }
+
+    class AssayResult {
+        +Guid Id
+        +Guid AssayId
+        +DateTime Timestamp
+        +Dictionary~string, object~ Measurements
+        +ResultStatus Status
+        +string Notes
+        +AssayResult(assayId: Guid)
+        +AddMeasurement(key: string, value: object): void
+        +IsValid(): bool
+    }
+
+    class SequenceGroup {
+        +int Id
+        +string Name
+        +string Description
+        +List~Sequence~ Sequences
+        +SequenceGroup(id: Guid, name: string, description: string)        
+    }
+
+    class InventoryRequirement {
+        +string ArticleType
+        +string ArticleId
+        +int Quantity
+        +Dictionary~string, object~ Properties
+        +InventoryRequirement(articleType: string, articleId: string, quantity: int)
+    }
+
+    class InventoryCheckResult {
+        +bool IsAvailable
+        +List~InventoryRequirement~ MissingItems
+        +List~InventoryRequirement~ ReservedItems
+        +Dictionary~string, string~ Errors
+        +InventoryCheckResult(isAvailable: bool)
+        +AddMissingItem(requirement: InventoryRequirement): void
+        +AddError(item: string, error: string): void
+    }
+
+    %% Enums
+    class AssayStatus {
+        <<enumeration>>
+        Created
+        Queued
+        InventoryReserved
+        InProgress
+        Completed
+        Failed
+        Cancelled
+        InventoryUnavailable
+    }
+
+    class AssayExecutionStatus {
+        <<enumeration>>
+        Created
+        InProgress
+        Completed
+        Failed
+        Cancelled
+    }
+
+    class AssayStepStatus {
+        <<enumeration>>
+        Pending
+        InProgress
+        Completed
+        Failed
+        Skipped
+    }
+
+    class SampleType {
+        <<enumeration>>
+        Unspecified
+        Sample
+        QC
+        CC
+        CAL
+        DarkBlank
+        RinseBlank
+        ReagentBlank
+        FlouroC
+    }
+
+    class Technology {
+        <<enumeration>>
+        Unspecified
+        ImmunoCap
+        Elia
+        ImmunoCapViewAllergy
+        EliaDualWash
+    }
+
+    %% Relationships
+    AssayManager --> AssaySample : manages
+    AssayManager --> AssayExecutionPlanner : uses
+    AssayManager --> SequenceGroupManager : coordinates with
+    AssayManager --> InventoryCheckResult : receives
+    
+    AssaySample --> Sample : contains
+    AssaySample --> Assay : contains
+    AssaySample --> AssayResult : produces
+    AssaySample --> SequenceGroup : converts to
+    AssaySample --> InventoryRequirement : requires
+    AssaySample --> AssayStatus : has
+    
+    AssayExecutionPlanner --> AssayExecutionPlan : creates
+    AssayExecutionPlan --> AssayExecutionStep : contains
+    AssayExecutionStep --> AssaySample : groups
+    
+    SequenceGroupManager --> SequenceGroup : manages
+    
+    Sample --> SampleType : typed as
+    Assay --> Technology : uses
+    Assay --> InventoryRequirement : requires
+    
+    InventoryCheckResult --> InventoryRequirement : tracks

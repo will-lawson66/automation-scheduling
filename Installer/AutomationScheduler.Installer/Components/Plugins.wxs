@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Fragment>
+    <ComponentGroup Id="PluginComponents" Directory="PLUGINSFOLDER">
+      <!-- Plugin directory structure -->
+      <Component Id="PluginDirectory" Guid="55555555-5555-5555-5555-555555555555">
+        <CreateFolder />
+      </Component>
+      
+      <!-- Placeholder for plugins that will be downloaded via custom action -->
+      <!-- The actual plugin files will be added dynamically during installation -->
+      
+      <!-- You can add static plugins here if needed -->
+      <!--
+      <Component Id="Plugin1" Guid="66666666-6666-6666-6666-666666666666">
+        <File Id="Plugin1.dll" Name="Plugin1.dll" Source="$(var.SourcePath)\plugins\Plugin1.dll" KeyPath="yes" />
+      </Component>
+      -->
+    </ComponentGroup>
+  </Fragment>
+</Wix>

@@ -1,0 +1,233 @@
+classDiagram
+    class SequenceGroupManager {
+        -ConcurrentDictionary~Guid, SequenceGroup~ _sequenceGroups
+        -ConcurrentDictionary~Guid, HardwareExecutionPlan~ _executionPlans
+        -IGrpcGateway _grpcGateway
+        -ILogger~SequenceGroupManager~ _logger
+        -SemaphoreSlim _executionSemaphore
+        -CancellationTokenSource _cancellationTokenSource
+        -Timer _monitoringTimer
+        +SequenceGroupManager(grpcGateway, logger)
+        +AddSequenceGroup(sequenceGroup: SequenceGroup): Task~bool~
+        +RemoveSequenceGroup(sequenceGroupId: Guid): Task~bool~
+        +ExecuteSequenceGroup(sequenceGroupId: Guid): Task~ExecutionResult~
+        +CancelSequenceGroup(sequenceGroupId: Guid): Task~bool~
+        +GetSequenceGroup(sequenceGroupId: Guid): SequenceGroup
+        +GetAllSequenceGroups(): IReadOnlyCollection~SequenceGroup~
+        +CreateHardwareExecutionPlan(sequenceGroups: IEnumerable~SequenceGroup~): HardwareExecutionPlan
+        +HandleSequenceCompletion(sequenceId: Guid, result: SequenceResult): Task
+        +HandleSequenceError(sequenceId: Guid, error: SequenceError): Task
+        +GetExecutionStatus(): ExecutionStatus
+        +OnSequenceGroupCompleted: EventHandler~SequenceGroupCompletedEventArgs~
+        +OnSequenceGroupFailed: EventHandler~SequenceGroupFailedEventArgs~
+    }
+
+    class HardwareExecutionPlan {
+        +Guid Id
+        +List~SequenceExecutionStep~ ExecutionSteps
+        +DateTime CreatedAt
+        +ExecutionPlanStatus Status
+        +TimeSpan EstimatedDuration
+        +Dictionary~string, object~ Metadata
+        +HardwareExecutionPlan(executionSteps: List~SequenceExecutionStep~)
+        +GetNextStep(): SequenceExecutionStep
+        +MarkStepCompleted(stepId: Guid): void
+        +MarkStepFailed(stepId: Guid, error: string): void
+        +GetProgress(): ExecutionProgress
+        +OptimizeExecution(): void
+        +ValidatePlan(): ValidationResult
+    }
+
+    class SequenceExecutionStep {
+        +Guid Id
+        +List~Sequence~ ParallelSequences
+        +List~Sequence~ SerialSequences
+        +SequenceStepStatus Status
+        +DateTime? StartedAt
+        +DateTime? CompletedAt
+        +TimeSpan EstimatedDuration
+        +Dictionary~string, ResourceRequirement~ ResourceRequirements
+        +string ErrorMessage
+        +SequenceExecutionStep(sequences: List~Sequence~)
+        +CanExecuteConcurrently(other: SequenceExecutionStep): bool
+        +GetResourceConflicts(other: SequenceExecutionStep): List~ResourceConflict~
+        +ValidatePrerequisites(): bool
+    }
+
+    class SequenceGroup {
+        +Guid Id
+        +string Name
+        +List~Sequence~ Sequences
+        +SequenceGroupStatus Status
+        +Dictionary~string, object~ Parameters
+        +Guid AssaySampleId
+        +DateTime CreatedAt
+        +DateTime? StartedAt
+        +DateTime? CompletedAt
+        +List~SequenceResult~ Results
+        +SequenceGroup(id: Guid, name: string, assaySampleId: Guid)
+        +AddSequence(sequence: Sequence): void
+        +RemoveSequence(sequenceId: Guid): bool
+        +GetNextSequence(): Sequence
+        +GetSequenceByType(sequenceType: SequenceType): Sequence
+        +IsCompleted(): bool
+        +CalculateDuration(): TimeSpan
+        +ValidateConfiguration(): ValidationResult
+    }
+
+    class Sequence {
+        +Guid Id
+        +string Name
+        +string Description
+        +SequenceType Type
+        +SequenceStatus Status
+        +Dictionary~string, Parameter~ Parameters
+        +List~ResourceRequirement~ ResourceRequirements
+        +TimeSpan EstimatedDuration
+        +TimeSpan? ActualDuration
+        +int RetryCount
+        +string ErrorMessage
+        +Sequence(id: Guid, name: string, type: SequenceType)
+        +SetParameter(name: string, value: object): void
+        +GetParameter(name: string): object
+        +ValidateParameters(): ValidationResult
+        +CanRunInParallel(other: Sequence): bool
+        +GetPrerequisites(): List~Guid~
+    }
+
+    class IGrpcGateway {
+        <<interface>>
+        +ConnectToHardwareEngine(): Task~bool~
+        +SendExecutionRequest(plan: HardwareExecutionPlan): Task~string~
+        +SubscribeToSequenceEvents(): IAsyncEnumerable~SequenceEvent~
+        +CancelExecution(requestId: string): Task~bool~
+        +GetHardwareStatus(): Task~HardwareStatus~
+        +SendSequenceCommand(sequenceId: Guid, command: SequenceCommand): Task~bool~
+    }
+
+    class SequenceResult {
+        +Guid SequenceId
+        +Guid AssayId
+        +DateTime Timestamp
+        +ResultStatus Status
+        +Dictionary~string, object~ Measurements
+        +Dictionary~string, object~ Metadata
+        +string Notes
+        +TimeSpan ExecutionTime
+        +SequenceResult(sequenceId: Guid, assayId: Guid)
+        +AddMeasurement(key: string, value: object): void
+        +IsValid(): bool
+        +GetQualityScore(): double
+    }
+
+    class ExecutionResult {
+        +bool IsSuccess
+        +string ErrorMessage
+        +List~SequenceResult~ SequenceResults
+        +TimeSpan TotalDuration
+        +Dictionary~string, object~ Metadata
+        +ExecutionResult(isSuccess: bool)
+        +AddSequenceResult(result: SequenceResult): void
+        +GetFailedSequences(): List~SequenceResult~
+    }
+
+    class ResourceRequirement {
+        +string ResourceType
+        +string ResourceId
+        +int Quantity
+        +TimeSpan Duration
+        +bool IsExclusive
+        +Dictionary~string, object~ Properties
+        +ResourceRequirement(resourceType: string, resourceId: string)
+        +ConflictsWith(other: ResourceRequirement): bool
+    }
+
+    class ExecutionProgress {
+        +int TotalSteps
+        +int CompletedSteps
+        +int FailedSteps
+        +int InProgressSteps
+        +double ProgressPercentage
+        +TimeSpan ElapsedTime
+        +TimeSpan EstimatedRemainingTime
+        +ExecutionProgress(totalSteps: int)
+        +UpdateProgress(completedSteps: int, failedSteps: int): void
+        +GetStatusSummary(): string
+    }
+
+    %% Enums
+    class SequenceGroupStatus {
+        <<enumeration>>
+        Created
+        Queued
+        InProgress
+        Completed
+        Failed
+        Cancelled
+    }
+
+    class SequenceStatus {
+        <<enumeration>>
+        Created
+        Queued
+        InProgress
+        Completed
+        Failed
+        Cancelled
+        Retrying
+    }
+
+    class SequenceType {
+        <<enumeration>>
+        Initialization
+        SamplePreparation
+        Reaction
+        Detection
+        Cleanup
+        Maintenance
+        Validation
+    }
+
+    class ExecutionPlanStatus {
+        <<enumeration>>
+        Created
+        Validated
+        InProgress
+        Completed
+        Failed
+        Cancelled
+    }
+
+    class SequenceStepStatus {
+        <<enumeration>>
+        Pending
+        InProgress
+        Completed
+        Failed
+        Skipped
+    }
+
+    %% Relationships
+    SequenceGroupManager --> SequenceGroup : manages
+    SequenceGroupManager --> HardwareExecutionPlan : creates
+    SequenceGroupManager --> IGrpcGateway : communicates via
+    SequenceGroupManager --> ExecutionResult : returns
+
+    SequenceGroup --> Sequence : contains
+    SequenceGroup --> SequenceResult : produces
+    SequenceGroup --> SequenceGroupStatus : has
+
+    HardwareExecutionPlan --> SequenceExecutionStep : contains
+    HardwareExecutionPlan --> ExecutionProgress : tracks
+    HardwareExecutionPlan --> ExecutionPlanStatus : has
+
+    SequenceExecutionStep --> Sequence : executes
+    SequenceExecutionStep --> ResourceRequirement : requires
+    SequenceExecutionStep --> SequenceStepStatus : has
+
+    Sequence --> ResourceRequirement : requires
+    Sequence --> SequenceStatus : has
+    Sequence --> SequenceType : typed as
+
+    ExecutionResult --> SequenceResult : contains
+    SequenceResult --> Sequence : results from

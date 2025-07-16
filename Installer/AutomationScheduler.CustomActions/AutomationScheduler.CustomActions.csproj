@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.TeamFoundationServer.Client" />
+    <PackageReference Include="WixToolset.Dtf.WindowsInstaller" />
+    <PackageReference Include="WixToolset.Dtf.CustomAction" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="NuGet.Protocol" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="$(TargetDir)*.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>
