@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs/bundle">
+  <Bundle Name="Minimal Bootstrapper"
+          Version="1.0.0.0"
+          Manufacturer="Test"
+          UpgradeCode="12345678-1234-1234-1234-123456789012">
+
+    <Chain>
+      <!-- Empty chain - just to test building -->
+    </Chain>
+  </Bundle>
+</Wix>

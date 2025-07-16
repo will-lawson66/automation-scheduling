@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+  
+  <Fragment>
+    <!-- .NET Core Runtime 8.0 Detection and Installation -->
+    <util:RegistrySearch Root="HKLM"
+                         Key="SOFTWARE\dotnet\Setup\InstalledVersions\x64\sharedhost"
+                         Value="Version"
+                         Variable="DotNetCore80Version"
+                         Result="value" />
+
+    <PackageGroup Id="DotNetCoreRuntime80">
+      <ExePackage Id="DotNetCore80Runtime"
+                  Name="Microsoft.NetCore.App.Runtime.8.0.19.exe"
+                  SourceFile="Prerequisites\dotnet-runtime-8.0.19-win-x64.exe"
+                  DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/dotnet-runtime-8.0.19-win-x64.exe"
+                  Compressed="no"
+                  PerMachine="yes"
+                  Permanent="yes"
+                  Vital="yes"
+                  DetectCondition="DotNetCore80Version &gt;= v8.0.19"
+                  InstallCondition="NOT DotNetCore80Version OR (DotNetCore80Version &lt; v8.0.19)">
+        <ExitCode Value="0" Behavior="success" />
+        <ExitCode Value="1641" Behavior="scheduleReboot" />
+        <ExitCode Value="3010" Behavior="scheduleReboot" />
+      </ExePackage>
+    </PackageGroup>
+
+    <!-- .NET Desktop Runtime 8.0 Detection and Installation -->
+    <util:RegistrySearch Root="HKLM"
+                         Key="SOFTWARE\dotnet\Setup\InstalledVersions\x64\desktop"
+                         Value="Version"
+                         Variable="DotNetDesktop80Version"
+                         Result="value" />
+
+    <PackageGroup Id="DotNetDesktopRuntime80">
+      <ExePackage Id="DotNetDesktop80Runtime"
+                  Name="Microsoft.WindowsDesktop.App.Runtime.8.0.10.exe"
+                  SourceFile="Prerequisites\windowsdesktop-runtime-8.0.10-win-x64.exe"
+                  DownloadUrl="https://download.visualstudio.microsoft.com/download/pr/windowsdesktop-runtime-8.0.10-win-x64.exe"
+                  Compressed="no"
+                  PerMachine="yes"
+                  Permanent="yes"
+                  Vital="yes"
+                  DetectCondition="DotNetDesktop80Version &gt;= v8.0.10"
+                  InstallCondition="NOT DotNetDesktop80Version OR (DotNetDesktop80Version &lt; v8.0.10)">
+        <ExitCode Value="0" Behavior="success" />
+        <ExitCode Value="1641" Behavior="scheduleReboot" />
+        <ExitCode Value="3010" Behavior="scheduleReboot" />
+      </ExePackage>
+    </PackageGroup>
+  </Fragment>
+</Wix>

@@ -1,0 +1,57 @@
+stateDiagram-v2
+    [*] --> Created : AssaySample instantiated
+    
+    Created --> Queued : Added to AssayManager
+    Created --> Failed : Validation failed
+    
+    Queued --> InventoryCheck : Inventory validation requested
+    Queued --> Cancelled : Cancelled by user
+    
+    InventoryCheck --> InventoryReserved : Inventory available & reserved
+    InventoryCheck --> InventoryUnavailable : Insufficient inventory
+    InventoryCheck --> Failed : Inventory check error
+    
+    InventoryUnavailable --> Queued : Inventory replenished
+    InventoryUnavailable --> Cancelled : Cancelled due to inventory
+    
+    InventoryReserved --> InProgress : Execution started
+    InventoryReserved --> Cancelled : Cancelled before execution
+    
+    InProgress --> Completed : All sequences completed successfully
+    InProgress --> Failed : Sequence execution failed
+    InProgress --> Cancelled : Execution cancelled
+    
+    Failed --> Queued : Retry requested
+    Cancelled --> [*] : Resources released
+    Completed --> [*] : Results reported
+    
+    %% State descriptions
+    Created : Initial state when AssaySample is created
+    Queued : Added to execution queue, waiting for processing
+    InventoryCheck : Checking inventory availability
+    InventoryUnavailable : Required inventory not available
+    InventoryReserved : Inventory reserved for execution
+    InProgress : Sample execution in progress
+    Completed : Sample execution completed successfully
+    Failed : Sample execution failed
+    Cancelled : Sample execution cancelled
+    
+    %% Notes on transitions
+    note right of InventoryCheck
+        - Check all required articles
+        - Verify expiration dates
+        - Reserve necessary quantities
+    end note
+    
+    note right of InProgress
+        - SequenceGroup created
+        - Sequences being executed
+        - Real-time status updates
+    end note
+    
+    note right of Completed
+        - All sequences finished
+        - Results collected
+        - FLR data reported
+        - Resources released
+    end note

@@ -1,0 +1,463 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Instrument.Scheduler.Cmr.Cli/1.0.0": {
+        "dependencies": {
+          "Instrument.Cli.CommandPlugin": "1.0.0",
+          "Instrument.Execution.Grpc.Schedule.Cli": "1.0.0",
+          "Instrument.Scheduler.Cmr.Grpc": "1.0.0"
+        },
+        "runtime": {
+          "Instrument.Scheduler.Cmr.Cli.dll": {}
+        }
+      },
+      "Grpc.Core.Api/2.62.0": {
+        "runtime": {
+          "lib/netstandard2.1/Grpc.Core.Api.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.62.0.0"
+          }
+        }
+      },
+      "Grpc.Net.Client/2.62.0": {
+        "dependencies": {
+          "Grpc.Net.Common": "2.62.0",
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.0"
+        },
+        "runtime": {
+          "lib/net8.0/Grpc.Net.Client.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.62.0.0"
+          }
+        }
+      },
+      "Grpc.Net.Common/2.62.0": {
+        "dependencies": {
+          "Grpc.Core.Api": "2.62.0"
+        },
+        "runtime": {
+          "lib/net8.0/Grpc.Net.Common.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.62.0.0"
+          }
+        }
+      },
+      "Microsoft.Extensions.Configuration.Abstractions/7.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "7.0.0"
+        },
+        "runtime": {
+          "lib/net7.0/Microsoft.Extensions.Configuration.Abstractions.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.0.22.51805"
+          }
+        }
+      },
+      "Microsoft.Extensions.Configuration.Binder/7.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "7.0.0"
+        },
+        "runtime": {
+          "lib/net7.0/Microsoft.Extensions.Configuration.Binder.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.0.22.51805"
+          }
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection.Abstractions/8.0.2": {
+        "runtime": {
+          "lib/net8.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.1024.46610"
+          }
+        }
+      },
+      "Microsoft.Extensions.Logging.Abstractions/6.0.0": {
+        "runtime": {
+          "lib/net6.0/Microsoft.Extensions.Logging.Abstractions.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
+          }
+        }
+      },
+      "Microsoft.Extensions.Options/7.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
+          "Microsoft.Extensions.Primitives": "7.0.0"
+        },
+        "runtime": {
+          "lib/net7.0/Microsoft.Extensions.Options.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.0.22.51805"
+          }
+        }
+      },
+      "Microsoft.Extensions.Options.ConfigurationExtensions/7.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "7.0.0",
+          "Microsoft.Extensions.Configuration.Binder": "7.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
+          "Microsoft.Extensions.Options": "7.0.0",
+          "Microsoft.Extensions.Primitives": "7.0.0"
+        },
+        "runtime": {
+          "lib/net7.0/Microsoft.Extensions.Options.ConfigurationExtensions.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.0.22.51805"
+          }
+        }
+      },
+      "Microsoft.Extensions.Primitives/7.0.0": {
+        "runtime": {
+          "lib/net7.0/Microsoft.Extensions.Primitives.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.0.22.51805"
+          }
+        }
+      },
+      "protobuf-net/3.2.30": {
+        "dependencies": {
+          "protobuf-net.Core": "3.2.30"
+        },
+        "runtime": {
+          "lib/net6.0/protobuf-net.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.2.30.709"
+          }
+        }
+      },
+      "protobuf-net.Core/3.2.30": {
+        "dependencies": {
+          "System.Collections.Immutable": "7.0.0"
+        },
+        "runtime": {
+          "lib/net6.0/protobuf-net.Core.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.2.30.709"
+          }
+        }
+      },
+      "protobuf-net.Grpc/1.1.1": {
+        "dependencies": {
+          "Grpc.Core.Api": "2.62.0",
+          "protobuf-net": "3.2.30"
+        },
+        "runtime": {
+          "lib/net6.0/protobuf-net.Grpc.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.1.1.4627"
+          }
+        }
+      },
+      "System.Collections.Immutable/7.0.0": {},
+      "Instrument.Authentication/1.0.0": {
+        "runtime": {
+          "Instrument.Authentication.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Instrument.Cli.CommandPlugin/1.0.0": {
+        "dependencies": {
+          "Instrument.Authentication": "1.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "7.0.0"
+        },
+        "runtime": {
+          "Instrument.Cli.CommandPlugin.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Instrument.Cli.CommandPlugin.Grpc/1.0.0": {
+        "dependencies": {
+          "Grpc.Net.Client": "2.62.0",
+          "Instrument.Cli.CommandPlugin": "1.0.0",
+          "protobuf-net.Grpc": "1.1.1"
+        },
+        "runtime": {
+          "Instrument.Cli.CommandPlugin.Grpc.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Instrument.Execution/1.0.0": {
+        "dependencies": {
+          "Instrument.Hardware": "1.0.0"
+        },
+        "runtime": {
+          "Instrument.Execution.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Instrument.Execution.Common/1.0.0": {
+        "dependencies": {
+          "Instrument.Execution": "1.0.0"
+        },
+        "runtime": {
+          "Instrument.Execution.Common.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Instrument.Execution.Grpc/1.0.0": {
+        "dependencies": {
+          "Instrument.Execution": "1.0.0",
+          "Instrument.Execution.Common": "1.0.0",
+          "Instrument.Grpc": "1.0.0"
+        },
+        "runtime": {
+          "Instrument.Execution.Grpc.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Instrument.Execution.Grpc.Schedule/1.0.0": {
+        "dependencies": {
+          "Instrument.Execution.Grpc": "1.0.0"
+        },
+        "runtime": {
+          "Instrument.Execution.Grpc.Schedule.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Instrument.Execution.Grpc.Schedule.Cli/1.0.0": {
+        "dependencies": {
+          "Grpc.Net.Client": "2.62.0",
+          "Instrument.Cli.CommandPlugin.Grpc": "1.0.0",
+          "Instrument.Execution.Grpc.Schedule": "1.0.0"
+        },
+        "runtime": {
+          "Instrument.Execution.Grpc.Schedule.Cli.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Instrument.Grpc/1.0.0": {
+        "dependencies": {
+          "Grpc.Net.Client": "2.62.0",
+          "protobuf-net.Grpc": "1.1.1"
+        },
+        "runtime": {
+          "Instrument.Grpc.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Instrument.Hardware/1.0.0": {
+        "runtime": {
+          "Instrument.Hardware.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Instrument.Scheduler/1.0.0": {
+        "dependencies": {
+          "Instrument.Execution": "1.0.0"
+        },
+        "runtime": {
+          "Instrument.Scheduler.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Instrument.Scheduler.Cmr.Grpc/1.0.0": {
+        "dependencies": {
+          "Instrument.Grpc": "1.0.0",
+          "Instrument.Scheduler": "1.0.0",
+          "protobuf-net": "3.2.30",
+          "protobuf-net.Grpc": "1.1.1"
+        },
+        "runtime": {
+          "Instrument.Scheduler.Cmr.Grpc.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Instrument.Scheduler.Cmr.Cli/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Grpc.Core.Api/2.62.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-q4Jj6bRZHNnE4CMLqgjiBUCKLit+tRr0simZsS2W6U++akd7CzXByeKy2tddqT68hFzP2XzceXA2YtBTfWtixA==",
+      "path": "grpc.core.api/2.62.0",
+      "hashPath": "grpc.core.api.2.62.0.nupkg.sha512"
+    },
+    "Grpc.Net.Client/2.62.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-C7HxLt+wWPTpPFORRHkxxtDLL+K/jXSmZBaPLhFM8AEkN0bYjklIfCwnzajn1gcbRcEETBb0WnRgHJdVzpwbCg==",
+      "path": "grpc.net.client/2.62.0",
+      "hashPath": "grpc.net.client.2.62.0.nupkg.sha512"
+    },
+    "Grpc.Net.Common/2.62.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-eBv5I4RPWfdezGXqooU5hs3+XcfVMLk5XDlA4G/Nd9TMX78ZGrFl/lM1Ad187zgBLmH7WPAgfjKRWLBwaa1Wbw==",
+      "path": "grpc.net.common/2.62.0",
+      "hashPath": "grpc.net.common.2.62.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Configuration.Abstractions/7.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-f34u2eaqIjNO9YLHBz8rozVZ+TcFiFs0F3r7nUJd7FRkVSxk8u4OpoK226mi49MwexHOR2ibP9MFvRUaLilcQQ==",
+      "path": "microsoft.extensions.configuration.abstractions/7.0.0",
+      "hashPath": "microsoft.extensions.configuration.abstractions.7.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Configuration.Binder/7.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-tgU4u7bZsoS9MKVRiotVMAwHtbREHr5/5zSEV+JPhg46+ox47Au84E3D2IacAaB0bk5ePNaNieTlPrfjbbRJkg==",
+      "path": "microsoft.extensions.configuration.binder/7.0.0",
+      "hashPath": "microsoft.extensions.configuration.binder.7.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyInjection.Abstractions/8.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3iE7UF7MQkCv1cxzCahz+Y/guQbTqieyxyaWKhrRO91itI9cOKO76OHeQDahqG4MmW5umr3CcCvGmK92lWNlbg==",
+      "path": "microsoft.extensions.dependencyinjection.abstractions/8.0.2",
+      "hashPath": "microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Logging.Abstractions/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/HggWBbTwy8TgebGSX5DBZ24ndhzi93sHUBDvP1IxbZD7FDokYzdAr6+vbWGjw2XAfR2EJ1sfKUotpjHnFWPxA==",
+      "path": "microsoft.extensions.logging.abstractions/6.0.0",
+      "hashPath": "microsoft.extensions.logging.abstractions.6.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Options/7.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lP1yBnTTU42cKpMozuafbvNtQ7QcBjr/CcK3bYOGEMH55Fjt+iecXjT6chR7vbgCMqy3PG3aNQSZgo/EuY/9qQ==",
+      "path": "microsoft.extensions.options/7.0.0",
+      "hashPath": "microsoft.extensions.options.7.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Options.ConfigurationExtensions/7.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-95UnxZkkFdXxF6vSrtJsMHCzkDeSMuUWGs2hDT54cX+U5eVajrCJ3qLyQRW+CtpTt5OJ8bmTvpQVHu1DLhH+cA==",
+      "path": "microsoft.extensions.options.configurationextensions/7.0.0",
+      "hashPath": "microsoft.extensions.options.configurationextensions.7.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Primitives/7.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-um1KU5kxcRp3CNuI8o/GrZtD4AIOXDk+RLsytjZ9QPok3ttLUelLKpilVPuaFT3TFjOhSibUAso0odbOaCDj3Q==",
+      "path": "microsoft.extensions.primitives/7.0.0",
+      "hashPath": "microsoft.extensions.primitives.7.0.0.nupkg.sha512"
+    },
+    "protobuf-net/3.2.30": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-C/UTlmxEJHAHpqm8xQK1UyJKaIynVCSNG4mVrbLgnZ7ccH28nN49O8iMJvKEodTgVbnimvy+3mIiAdW6mATwnw==",
+      "path": "protobuf-net/3.2.30",
+      "hashPath": "protobuf-net.3.2.30.nupkg.sha512"
+    },
+    "protobuf-net.Core/3.2.30": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-v2ZxxYrz+X212ukSx+uqkLuPu414bvmSAnTyf+PBUKR9ENJxO4P/csorA/27456MCp1JNoMssDj/f91RDiwBfQ==",
+      "path": "protobuf-net.core/3.2.30",
+      "hashPath": "protobuf-net.core.3.2.30.nupkg.sha512"
+    },
+    "protobuf-net.Grpc/1.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-uThFb/iUplzuXEa/cztJaNGpKLRQRb515STtQX99IS1MKh8Qsunw6MjjU+9rjo8s9UymR6lN9Ab6xT3adBlyDg==",
+      "path": "protobuf-net.grpc/1.1.1",
+      "hashPath": "protobuf-net.grpc.1.1.1.nupkg.sha512"
+    },
+    "System.Collections.Immutable/7.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-dQPcs0U1IKnBdRDBkrCTi1FoajSTBzLcVTpjO4MBCMC7f4pDOIPzgBoX8JjG7X6uZRJ8EBxsi8+DR1JuwjnzOQ==",
+      "path": "system.collections.immutable/7.0.0",
+      "hashPath": "system.collections.immutable.7.0.0.nupkg.sha512"
+    },
+    "Instrument.Authentication/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Instrument.Cli.CommandPlugin/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Instrument.Cli.CommandPlugin.Grpc/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Instrument.Execution/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Instrument.Execution.Common/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Instrument.Execution.Grpc/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Instrument.Execution.Grpc.Schedule/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Instrument.Execution.Grpc.Schedule.Cli/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Instrument.Grpc/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Instrument.Hardware/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Instrument.Scheduler/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Instrument.Scheduler.Cmr.Grpc/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

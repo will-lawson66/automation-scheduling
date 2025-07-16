@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="protobuf-net" />
+    <PackageReference Include="protobuf-net.Grpc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Grpc\Instrument.Grpc\Instrument.Grpc.csproj" />
+    <ProjectReference Include="..\..\Instrument.Scheduler\Instrument.Scheduler.csproj" />
+    <ProjectReference Include="..\Instrument.Scheduler.Cmr\Instrument.Scheduler.Cmr.csproj" />
+  </ItemGroup>
+
+</Project>

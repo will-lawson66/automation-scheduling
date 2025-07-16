@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Fragment>
+    <ComponentGroup Id="ConsoleApplications" Directory="INSTALLFOLDER">
+      <!-- Console Application 1 -->
+      <Component Id="ConsoleApp1.exe" Guid="11111111-1111-1111-1111-111111111111">
+        <File Id="ConsoleApp1.exe" Name="ConsoleApp1.exe" Source="$(var.SourcePath)\ConsoleApp1.exe" KeyPath="yes">
+          <Shortcut Id="ConsoleApp1Shortcut" Directory="DesktopFolder" 
+                    Name="Console App 1" 
+                    Description="Automation Scheduler Console Application 1"
+                    WorkingDirectory="INSTALLFOLDER" 
+                    Icon="AppIcon.ico" 
+                    Advertise="yes" />
+        </File>
+        <File Id="ConsoleApp1.dll" Name="ConsoleApp1.dll" Source="$(var.SourcePath)\ConsoleApp1.dll" />
+        <File Id="ConsoleApp1.runtimeconfig.json" Name="ConsoleApp1.runtimeconfig.json" Source="$(var.SourcePath)\ConsoleApp1.runtimeconfig.json" />
+        <File Id="ConsoleApp1.deps.json" Name="ConsoleApp1.deps.json" Source="$(var.SourcePath)\ConsoleApp1.deps.json" />
+      </Component>
+      
+      <!-- Console Application 2 -->
+      <Component Id="ConsoleApp2.exe" Guid="22222222-2222-2222-2222-222222222222">
+        <File Id="ConsoleApp2.exe" Name="ConsoleApp2.exe" Source="$(var.SourcePath)\ConsoleApp2.exe" KeyPath="yes">
+          <Shortcut Id="ConsoleApp2Shortcut" Directory="DesktopFolder" 
+                    Name="Console App 2" 
+                    Description="Automation Scheduler Console Application 2"
+                    WorkingDirectory="INSTALLFOLDER" 
+                    Icon="AppIcon.ico" 
+                    Advertise="yes" />
+        </File>
+        <File Id="ConsoleApp2.dll" Name="ConsoleApp2.dll" Source="$(var.SourcePath)\ConsoleApp2.dll" />
+        <File Id="ConsoleApp2.runtimeconfig.json" Name="ConsoleApp2.runtimeconfig.json" Source="$(var.SourcePath)\ConsoleApp2.runtimeconfig.json" />
+        <File Id="ConsoleApp2.deps.json" Name="ConsoleApp2.deps.json" Source="$(var.SourcePath)\ConsoleApp2.deps.json" />
+      </Component>
+      
+      <!-- Console Application 3 -->
+      <Component Id="ConsoleApp3.exe" Guid="33333333-3333-3333-3333-333333333333">
+        <File Id="ConsoleApp3.exe" Name="ConsoleApp3.exe" Source="$(var.SourcePath)\ConsoleApp3.exe" KeyPath="yes">
+          <Shortcut Id="ConsoleApp3Shortcut" Directory="DesktopFolder" 
+                    Name="Console App 3" 
+                    Description="Automation Scheduler Console Application 3"
+                    WorkingDirectory="INSTALLFOLDER" 
+                    Icon="AppIcon.ico" 
+                    Advertise="yes" />
+        </File>
+        <File Id="ConsoleApp3.dll" Name="ConsoleApp3.dll" Source="$(var.SourcePath)\ConsoleApp3.dll" />
+        <File Id="ConsoleApp3.runtimeconfig.json" Name="ConsoleApp3.runtimeconfig.json" Source="$(var.SourcePath)\ConsoleApp3.runtimeconfig.json" />
+        <File Id="ConsoleApp3.deps.json" Name="ConsoleApp3.deps.json" Source="$(var.SourcePath)\ConsoleApp3.deps.json" />
+      </Component>
+      
+      <!-- appsettings.json -->
+      <Component Id="AppSettings" Guid="44444444-4444-4444-4444-444444444444">
+        <File Id="appsettings.json" Name="appsettings.json" Source="$(var.SourcePath)\appsettings.json" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

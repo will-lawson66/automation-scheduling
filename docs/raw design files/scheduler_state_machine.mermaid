@@ -1,0 +1,77 @@
+stateDiagram-v2
+    [*] --> Initialized : System Startup
+
+    Initialized --> SteadyState : HAL Steady-State Event
+    Initialized --> OutOfRange : HAL Out-of-Range Event
+    
+    SteadyState --> OutOfRange : HAL Out-of-Range Event
+    SteadyState --> Initialized : System Reset
+    
+    OutOfRange --> SteadyState : HAL Steady-State Event<br/>(Timer Reset)
+    OutOfRange --> InvalidTests : 8-Minute Timer Expired
+    OutOfRange --> Initialized : System Reset
+    
+    InvalidTests --> Initialized : Manual Reset Required
+    
+    %% State descriptions and behaviors
+    state Initialized {
+        [*] --> IdleState
+        IdleState : No Processing Allowed
+        IdleState : Timer Inactive
+        IdleState : Waiting for Steady-State
+    }
+    
+    state SteadyState {
+        [*] --> ProcessingEnabled
+        ProcessingEnabled : Test Processing Active
+        ProcessingEnabled : Normal Operations
+        ProcessingEnabled : Environmental Conditions OK
+        
+        ProcessingEnabled --> ProcessingAssays : Assays in Queue
+        ProcessingAssays --> ProcessingEnabled : Assays Completed
+        ProcessingAssays --> ProcessingEnabled : Queue Empty
+    }
+    
+    state OutOfRange {
+        [*] --> TimerActivated
+        TimerActivated : 8-Minute Timer Started
+        TimerActivated : Processing Suspended
+        TimerActivated : Monitoring Conditions
+        
+        TimerActivated --> TimerRunning
+        TimerRunning : Timer Counting Down
+        TimerRunning : Waiting for Recovery
+    }
+    
+    state InvalidTests {
+        [*] --> AllTestsInvalidated
+        AllTestsInvalidated : All Processing Stopped
+        AllTestsInvalidated : In-Flight Tests Invalidated
+        AllTestsInvalidated : Manual Intervention Required
+        AllTestsInvalidated : System Locked
+    }
+
+    %% Notes for business rules
+    note right of OutOfRange
+        Business Rule: Core Environment
+        - Timer starts when entering Out-of-Range
+        - If conditions recover within 8 minutes,
+          return to Steady-State
+        - If timer expires, invalidate all tests
+    end note
+    
+    note right of InvalidTests
+        Critical State:
+        - All current tests are invalidated
+        - No new tests can be started
+        - Requires manual system reset
+        - Comprehensive system check needed
+    end note
+    
+    note left of SteadyState
+        Normal Operating State:
+        - All systems functioning normally
+        - Test processing allowed
+        - Environmental conditions stable
+        - Full automation enabled
+    end note

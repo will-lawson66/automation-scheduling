@@ -1,0 +1,93 @@
+flowchart TD
+    %% Input Sources
+    CLI[CLI Commands]
+    PHAROS[Pharos Requests]
+    CMR_FILE[CMR Files]
+    HAL_EVENTS[HAL Events]
+    
+    %% CLI Command Processing
+    CLI --> CMR_CMD_SVC[CMR Command Service]
+    CMR_CMD_SVC --> CMR_SVC[CMR Service]
+    CMR_SVC --> CMR_PARSER[CMR File Parser]
+    CMR_PARSER --> CMR_DATA[(CMR Data)]
+    
+    %% Pharos Processing (Future)
+    PHAROS -.-> PHAROS_GATEWAY[Pharos Gateway]
+    PHAROS_GATEWAY -.-> SCHEDULER_SVC[Scheduler Service]
+    
+    %% Core Scheduler Service
+    SCHEDULER_SVC --> ASSAY_MGR[Assay Manager]
+    CMR_SVC --> ASSAY_MGR
+    
+    %% State Management
+    HAL_EVENTS --> GRPC_GW[gRPC Gateway]
+    GRPC_GW --> EVENTS[Events]
+    EVENTS --> STATE_MGR[State Manager]
+    STATE_MGR --> SCHEDULER_SVC
+    STATE_MGR --> ASSAY_MGR
+    
+    %% Assay Processing Pipeline
+    ASSAY_MGR --> EXEC_PLANNER[Execution Planner]
+    EXEC_PLANNER --> EXEC_PLAN[(Execution Plan)]
+    
+    %% Inventory Management
+    ASSAY_MGR --> INV_SVC[Inventory Service]
+    INV_SVC --> INV_CHECK{Inventory Available?}
+    INV_CHECK -->|Yes| INV_RESERVE[Reserve Inventory]
+    INV_CHECK -->|No| INV_ERROR[Inventory Error]
+    INV_ERROR --> CMR_CMD_SVC
+    
+    INV_RESERVE --> READY_SAMPLES[Ready for Execution]
+    READY_SAMPLES --> SEQ_GROUP_MGR[Sequence Group Manager]
+    
+    %% Sequence Group Processing
+    SEQ_GROUP_MGR --> HW_PLAN[Hardware Execution Plan]
+    HW_PLAN --> GRPC_GW
+    GRPC_GW --> HW_EXEC_ENGINE[Hardware Execution Engine]
+    
+    %% Hardware Execution
+    HW_EXEC_ENGINE --> HAL_EVENTS
+    GRPC_GW --> SEQ_GROUP_MGR
+    
+    %% Result Processing
+    SEQ_GROUP_MGR --> SEQ_RESULTS[Sequence Results]
+    SEQ_RESULTS --> ASSAY_MGR
+    ASSAY_MGR --> FLR_SVC[FLR Service]
+    
+    %% Data Persistence
+    DATA_SVC[Data Persistence Service] --> SEQ_DB[(Sequence Database)]
+    DATA_SVC --> ASSAY_MGR
+    DATA_SVC --> SEQ_GROUP_MGR
+    
+    %% Cleanup and Finalization
+    ASSAY_MGR --> CLEANUP[Cleanup Service]
+    CLEANUP --> INV_RELEASE[Release Inventory]
+    INV_RELEASE --> INV_SVC
+    CLEANUP --> REMOVE_SAMPLES[Remove Completed Samples]
+    
+    %% Error Handling
+    ERROR_HANDLER[Error Handler] --> ASSAY_MGR
+    ERROR_HANDLER --> SEQ_GROUP_MGR
+    ERROR_HANDLER --> CMR_CMD_SVC
+    ERROR_HANDLER --> LOG_DB
+    
+    %% Event Flow Lines
+    ASSAY_MGR -.->|Status Events| EVENTS
+    SEQ_GROUP_MGR -.->|Completion Events| EVENTS
+    INV_SVC -.->|Inventory Events| EVENTS
+    STATE_MGR <-.->|State Events| EVENTS
+    
+    %% Styling
+    classDef inputNode fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef serviceNode fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef managerNode fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef dataNode fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef decisionNode fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef hardwareNode fill:#fff8e1,stroke:#ff8f00,stroke-width:2px
+    
+    class CLI,PHAROS,CMR_FILE,HAL_EVENTS inputNode
+    class CMR_SVC,INV_SVC,FLR_SVC,DATA_SVC,CONFIG_MGR,MONITOR,ERROR_HANDLER serviceNode
+    class SCHEDULER_SVC,ASSAY_MGR,SEQ_GROUP_MGR,STATE_MGR,EXEC_PLANNER,CMR_CMD_SVC managerNode
+    class CMR_DATA,INV_DB,FLR_DB,CONFIG_DB,SEQ_DB,LOG_DB,METRICS_DB,EXEC_PLAN dataNode
+    class INV_CHECK decisionNode
+    class HW_EXEC_ENGINE,GRPC_GW,HW_SEQUENCES hardwareNode

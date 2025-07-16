@@ -1,0 +1,12 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+	 xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+	<Fragment>
+		<util:QueryNativeMachine />
+		
+		<Launch	Condition='"$(sys.BUILDARCH)" ~= "ARM64" IMP WIX_NATIVE_MACHINE = 43620'
+			       Message="TODO  This package can run only on $(sys.BUILDARCH) machines!  TODO" />
+		<Launch Condition="MsiNTProductType = 1" Message="Wrong OS." />
+		
+		
+	</Fragment>
+</Wix>
