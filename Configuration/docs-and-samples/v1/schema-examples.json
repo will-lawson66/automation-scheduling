@@ -1,0 +1,297 @@
+{
+  "_comment": "email.schema.json - Schema for email automation module",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Email Automation Configuration",
+  "required": ["smtp", "templates"],
+  "properties": {
+    "smtp": {
+      "type": "object",
+      "required": ["server", "port"],
+      "properties": {
+        "server": {
+          "type": "string",
+          "format": "hostname",
+          "description": "SMTP server hostname"
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535,
+          "default": 587
+        },
+        "security": {
+          "type": "string",
+          "enum": ["none", "ssl", "tls"],
+          "default": "tls"
+        },
+        "authentication": {
+          "type": "object",
+          "required": ["username"],
+          "properties": {
+            "username": {
+              "type": "string",
+              "minLength": 1
+            },
+            "passwordSource": {
+              "type": "string",
+              "enum": ["environment", "keyvault", "file"],
+              "default": "environment"
+            }
+          }
+        },
+        "connectionTimeout": {
+          "type": "integer",
+          "minimum": 1000,
+          "maximum": 60000,
+          "default": 30000,
+          "description": "Connection timeout in milliseconds"
+        },
+        "retryPolicy": {
+          "type": "object",
+          "properties": {
+            "maxRetries": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10,
+              "default": 3
+            },
+            "retryDelay": {
+              "type": "integer",
+              "minimum": 1000,
+              "default": 5000,
+              "description": "Delay between retries in milliseconds"
+            }
+          }
+        }
+      }
+    },
+    "templates": {
+      "type": "object",
+      "properties": {
+        "basePath": {
+          "type": "string",
+          "default": "./templates"
+        },
+        "defaultTemplate": {
+          "type": "string",
+          "default": "default.html"
+        },
+        "cacheEnabled": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "processing": {
+      "type": "object",
+      "properties": {
+        "batchSize": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000,
+          "default": 50
+        },
+        "maxConcurrentSends": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20,
+          "default": 5
+        },
+        "queueProcessingInterval": {
+          "type": "integer",
+          "minimum": 1000,
+          "default": 10000,
+          "description": "Queue processing interval in milliseconds"
+        }
+      }
+    }
+  }
+}
+
+---
+
+{
+  "_comment": "fileprocessing.schema.json - Schema for file processing automation",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "File Processing Configuration",
+  "required": ["watchFolders", "processing"],
+  "properties": {
+    "watchFolders": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["path", "pattern"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Folder path to monitor"
+          },
+          "pattern": {
+            "type": "string",
+            "default": "*.*",
+            "description": "File pattern to match"
+          },
+          "includeSubdirectories": {
+            "type": "boolean",
+            "default": false
+          },
+          "filters": {
+            "type": "object",
+            "properties": {
+              "minFileSize": {
+                "type": "integer",
+                "minimum": 0,
+                "default": 0,
+                "description": "Minimum file size in bytes"
+              },
+              "maxFileAge": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Maximum file age in hours"
+              },
+              "excludePatterns": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "default": ["*.tmp", "*.lock"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "processing": {
+      "type": "object",
+      "required": ["outputPath"],
+      "properties": {
+        "outputPath": {
+          "type": "string",
+          "minLength": 1
+        },
+        "archivePath": {
+          "type": "string"
+        },
+        "errorPath": {
+          "type": "string"
+        },
+        "batchSize": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000,
+          "default": 100
+        },
+        "parallelism": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32,
+          "default": 4
+        },
+        "processors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type"],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["csv", "xml", "json", "excel", "pdf", "image"]
+              },
+              "enabled": {
+                "type": "boolean",
+                "default": true
+              },
+              "settings": {
+                "type": "object",
+                "description": "Processor-specific settings"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+---
+
+{
+  "_comment": "Example usage in Program.cs",
+  "csharp_usage": `
+// Program.cs - Using schema validation
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+public class Program
+{
+    public static async Task Main(string[] args)
+    {
+        var host = CreateHostBuilder(args).Build();
+        await host.RunAsync();
+    }
+
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration((context, config) =>
+            {
+                // Clear default configuration sources
+                config.Sources.Clear();
+
+                // Add schema-validated JSON configurations
+                config.AddSchemaValidatedJson(
+                    configPath: "./config/email.config.json",
+                    schemaPath: "./schemas/email.schema.json",
+                    options: new SchemaValidationOptions
+                    {
+                        StrictValidation = context.HostingEnvironment.IsProduction(),
+                        LogValidationErrors = true,
+                        ApplyDefaults = true
+                    });
+
+                config.AddSchemaValidatedJson(
+                    configPath: "./config/fileprocessing.config.json",
+                    schemaPath: "./schemas/fileprocessing.schema.json");
+
+                // Add environment variables and command line args
+                config.AddEnvironmentVariables("AUTOMATION_");
+                config.AddCommandLine(args);
+            })
+            .ConfigureServices((context, services) =>
+            {
+                // Register configuration objects
+                services.Configure<EmailConfig>(
+                    context.Configuration.GetSection("Email"));
+                services.Configure<FileProcessingConfig>(
+                    context.Configuration.GetSection("FileProcessing"));
+
+                // Add validation
+                services.AddOptions<EmailConfig>()
+                    .ValidateDataAnnotations()
+                    .ValidateOnStart();
+            });
+}
+
+// Configuration classes
+public class EmailConfig
+{
+    public SmtpConfig Smtp { get; set; } = new();
+    public TemplateConfig Templates { get; set; } = new();
+    public ProcessingConfig Processing { get; set; } = new();
+}
+
+public class SmtpConfig
+{
+    public string Server { get; set; } = string.Empty;
+    public int Port { get; set; } = 587;
+    public string Security { get; set; } = "tls";
+    public AuthenticationConfig Authentication { get; set; } = new();
+    public int ConnectionTimeout { get; set; } = 30000;
+    public RetryPolicyConfig RetryPolicy { get; set; } = new();
+}
+`
+}
