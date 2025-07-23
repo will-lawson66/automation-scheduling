@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+  <!-- Package definition -->
+  <Package Name="YourApplication" 
+           Manufacturer="YourCompany" 
+           Version="1.0.0.0" 
+           UpgradeCode="PUT-YOUR-UPGRADE-CODE-HERE">
+
+    <!-- Features -->
+    <Feature Id="MainFeature" Title="Main Application" Level="1">
+      <ComponentRef Id="MainApplicationComponent" />
+      <ComponentRef Id="ConsoleApp1Component" />
+      <ComponentRef Id="ConsoleApp2Component" />
+      <ComponentRef Id="ConsoleApp3Component" />
+      <ComponentRef Id="PluginsComponent" />
+      <ComponentRef Id="ConfigComponent" />
+    </Feature>
+
+    <!-- Directory structure -->
+    <StandardDirectory Id="ProgramFilesFolder">
+      <Directory Id="CompanyFolder" Name="YourCompany">
+        <Directory Id="INSTALLFOLDER" Name="YourApplication">
+          <Directory Id="PluginsFolder" Name="plugins" />
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="DesktopFolder" />
+
+    <!-- Main application components -->
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="MainApplicationComponent">
+        <File Source="path\to\MainApp.exe" />
+      </Component>
+      
+      <Component Id="ConsoleApp1Component">
+        <File Id="ConsoleApp1File" Source="path\to\ConsoleApp1.exe" />
+      </Component>
+      
+      <Component Id="ConsoleApp2Component">
+        <File Source="path\to\ConsoleApp2.exe" />
+      </Component>
+      
+      <Component Id="ConsoleApp3Component">
+        <File Source="path\to\ConsoleApp3.exe" />
+      </Component>
+
+      <Component Id="ConfigComponent">
+        <File Id="AppSettingsFile" Source="path\to\appsettings.json" />
+        <!-- Add other config files as needed -->
+      </Component>
+    </DirectoryRef>
+
+    <!-- Plugins directory -->
+    <DirectoryRef Id="PluginsFolder">
+      <Component Id="PluginsComponent">
+        <!-- Add your plugin files here -->
+        <File Source="path\to\plugin1.dll" />
+      </Component>
+    </DirectoryRef>
+
+    <!-- Desktop shortcuts -->
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="DesktopShortcuts">
+        <Shortcut Id="ConsoleApp1Shortcut"
+                  Name="Console App 1"
+                  Target="[INSTALLFOLDER]ConsoleApp1.exe"
+                  WorkingDirectory="INSTALLFOLDER" />
+        
+        <Shortcut Id="ConsoleApp2Shortcut"
+                  Name="Console App 2"
+                  Target="[INSTALLFOLDER]ConsoleApp2.exe"
+                  WorkingDirectory="INSTALLFOLDER" />
+        
+        <Shortcut Id="ConsoleApp3Shortcut"
+                  Name="Console App 3"
+                  Target="[INSTALLFOLDER]ConsoleApp3.exe"
+                  WorkingDirectory="INSTALLFOLDER" />
+        
+        <RegistryValue Root="HKCU" 
+                       Key="Software\YourCompany\YourApplication" 
+                       Name="DesktopShortcuts" 
+                       Value="1" 
+                       Type="integer" />
+      </Component>
+    </DirectoryRef>
+
+    <!-- APPROACH 1: Custom Action to Launch Application -->
+    
+    <!-- Property to control whether app should launch -->
+    <Property Id="LAUNCHAPP" Value="1" />
+    
+    <!-- Custom action to launch the application -->
+    <CustomAction Id="LaunchApplication" 
+                  Directory="INSTALLFOLDER" 
+                  ExeCommand="[INSTALLFOLDER]ConsoleApp1.exe" 
+                  Execute="immediate" 
+                  Return="asyncNoWait" 
+                  Impersonate="yes" />
+
+    <!-- Alternative custom action using File reference -->
+    <CustomAction Id="LaunchApplicationAlt" 
+                  File="ConsoleApp1File" 
+                  ExeCommand="" 
+                  Execute="immediate" 
+                  Return="asyncNoWait" 
+                  Impersonate="yes" />
+
+    <!-- Install sequence - launch app after install finalize -->
+    <InstallExecuteSequence>
+      <Custom Action="LaunchApplication" 
+              After="InstallFinalize">
+        <![CDATA[NOT Installed AND LAUNCHAPP = "1"]]>
+      </Custom>
+    </InstallExecuteSequence>
+
+    <!-- APPROACH 2: UI with Checkbox Option -->
+    
+    <!-- Use WixUI extension for built-in dialogs -->
+    <ui:WixUI Id="WixUI_FeatureTree" />
+    
+    <!-- Custom finish dialog with launch checkbox -->
+    <UI>
+      <Dialog Id="CustomFinishDlg" Width="370" Height="270" Title="!(loc.ExitDialog_Title)">
+        <Control Id="Finish" Type="PushButton" X="304" Y="243" Width="56" Height="17" 
+                 Default="yes" Cancel="yes" Text="!(loc.WixUIFinish)" />
+        
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" 
+                 Visible="no" Text="!(loc.WixUICancel)" />
+        
+        <Control Id="Bitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="234" 
+                 TabSkip="no" Text="!(loc.ExitDialogBitmap)" />
+        
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" 
+                 Text="!(loc.WixUIBack)" />
+        
+        <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+        
+        <Control Id="Description" Type="Text" X="135" Y="70" Width="220" Height="20" 
+                 Transparent="yes" NoPrefix="yes" Text="Click Finish to exit the Setup Wizard." />
+        
+        <Control Id="Title" Type="Text" X="135" Y="20" Width="220" Height="60" 
+                 Transparent="yes" NoPrefix="yes" 
+                 Text="{\WixUI_Font_Bigger}Completing the [ProductName] Setup Wizard" />
+
+        <!-- Launch application checkbox -->
+        <Control Id="LaunchCheckBox" Type="CheckBox" X="135" Y="100" Width="220" Height="17" 
+                 Property="LAUNCHAPP" CheckBoxValue="1" 
+                 Text="Launch Console Application 1 now">
+          <Condition Action="show">NOT Installed</Condition>
+        </Control>
+      </Dialog>
+
+      <!-- Wire up the custom finish dialog -->
+      <InstallUISequence>
+        <Show Dialog="CustomFinishDlg" After="ExecuteAction">
+          <![CDATA[NOT Installed]]>
+        </Show>
+      </InstallUISequence>
+    </UI>
+
+    <!-- APPROACH 3: Launch with Parameters -->
+    
+    <!-- Custom action with command line parameters -->
+    <CustomAction Id="LaunchAppWithParams" 
+                  Directory="INSTALLFOLDER" 
+                  ExeCommand="[INSTALLFOLDER]ConsoleApp1.exe --post-install --config &quot;[INSTALLFOLDER]appsettings.json&quot;"
+                  Execute="immediate" 
+                  Return="asyncNoWait" 
+                  Impersonate="yes" />
+
+    <!-- APPROACH 4: Conditional Launch Based on User Selection -->
+    
+    <!-- Property for dropdown selection (you mentioned dropdown options) -->
+    <Property Id="INSTALLTYPE" Value="Standard" />
+    
+    <!-- Different launch actions based on install type -->
+    <CustomAction Id="LaunchStandardApp" 
+                  File="ConsoleApp1File" 
+                  Execute="immediate" 
+                  Return="asyncNoWait" 
+                  Impersonate="yes" />
+    
+    <CustomAction Id="LaunchAdvancedApp" 
+                  Directory="INSTALLFOLDER" 
+                  ExeCommand="[INSTALLFOLDER]ConsoleApp2.exe --advanced-mode"
+                  Execute="immediate" 
+                  Return="asyncNoWait" 
+                  Impersonate="yes" />
+
+    <!-- Conditional execution in install sequence -->
+    <InstallExecuteSequence>
+      <Custom Action="LaunchStandardApp" 
+              After="InstallFinalize">
+        <![CDATA[NOT Installed AND LAUNCHAPP = "1" AND INSTALLTYPE = "Standard"]]>
+      </Custom>
+      
+      <Custom Action="LaunchAdvancedApp" 
+              After="InstallFinalize">
+        <![CDATA[NOT Installed AND LAUNCHAPP = "1" AND INSTALLTYPE = "Advanced"]]>
+      </Custom>
+    </InstallExecuteSequence>
+
+  </Package>
+</Wix>
